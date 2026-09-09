@@ -1,0 +1,148 @@
+{% extends "shared/dashboard_layout.html" %}
+{% block title %}Fingerprint Enrollment{% endblock %}
+{% block body_class %}portal-center{% endblock %}
+{% block breadcrumbs %}
+<div class="breadcrumb-bar"><a href="{{ url_for('center_dashboard') }}">Dashboard</a><span class="sep">/</span><a href="{{ url_for('center_register') }}">Register Farmer</a><span class="sep">/</span>Fingerprint Enrollment</div>
+{% endblock %}
+{% block page_title %}Fingerprint Enrollment{% endblock %}
+{% block page_subtitle %}Farmer ID: <span class="text-mono">{{ farmer_id }}</span> &middot; {{ enrolled|length }} of {{ max_allowed }} enrolled (minimum {{ min_required }}){% endblock %}
+{% block page_actions %}
+<a href="{{ url_for('center_registration_result', farmer_id=farmer_id) }}" class="btn btn-outline-secondary"><i class="bi bi-eye me-1"></i>View Registration Summary</a>
+{% endblock %}
+
+{% block content %}
+
+<!-- Operator-facing 3-step workflow -->
+<div class="stepper-bar mb-3">
+  <div class="step-item completed"><div class="step-circle"><i class="bi bi-check-lg"></i></div><div class="step-label">Farmer Details</div></div>
+  <div class="step-item active" id="stepperFinger"><div class="step-circle">2</div><div class="step-label">Select Finger</div></div>
+  <div class="step-item" id="stepperCapture"><div class="step-circle">3</div><div class="step-label">Capture &amp; Register</div></div>
+</div>
+
+<!-- Collapsible technical pipeline for demo / examiner mode -->
+<details class="mb-4" id="techPipelineDetails">
+  <summary class="btn btn-sm btn-outline-secondary" style="cursor:pointer;">
+    <i class="bi bi-cpu me-1"></i> View Technical Security Pipeline
+  </summary>
+  <div class="surface mt-2 p-3">
+    <div class="row g-2 align-items-center">
+      {% set steps = [
+        ('bi-grid-3x3-gap-fill', 'SourceAFIS Template', 'Minutiae extraction', ''),
+        ('bi-shield-lock-fill',  'AES-256-GCM',         'Symmetric encryption', 'AES-256'),
+        ('bi-key-fill',          'ML-KEM-1024',          'Key encapsulation',    'PQ-KEM'),
+        ('bi-pen-fill',          'ML-DSA-87',            'Digital signature',    'PQ-DSA'),
+        ('bi-hash',              'SHA3-256',             'Integrity hash',       ''),
+        ('bi-hdd-network-fill',  'IPFS Upload',          'Content-addressed CID',''),
+        ('bi-link-45deg',        'Blockchain',           'On-chain CID anchor',  '')
+      ] %}
+      {% for icon, title, desc, tag in steps %}
+      <div class="col-auto">
+        <div class="d-flex align-items-center gap-2 p-2 rounded-3" style="background:var(--card-alt);min-width:155px;">
+          <i class="bi {{ icon }} text-primary" style="font-size:1.1rem;width:22px;"></i>
+          <div>
+            <div style="font-size:0.78rem;font-weight:600;">{{ title }}</div>
+            <div style="font-size:0.7rem;color:var(--muted);">{{ desc }}</div>
+            {% if tag %}<span class="chain-tag">{{ tag }}</span>{% endif %}
+          </div>
+        </div>
+      </div>
+      {% if not loop.last %}<div class="col-auto" style="color:var(--line);font-size:1.2rem;">→</div>{% endif %}
+      {% endfor %}
+    </div>
+  </div>
+</details>
+
+
+<div class="row g-4">
+  <div class="col-lg-7">
+    <div class="surface">
+      <div class="surface-body">
+        <form method="POST" action="{{ url_for('center_enroll', farmer_id=farmer_id) }}" enctype="multipart/form-data" id="enrollFingerprintForm">
+
+          <!-- Step: choose finger -->
+          <div class="step-panel active" id="stepPanelFinger">
+            <div class="form-section-title mb-3"><i class="bi bi-hand-index-thumb me-2"></i>Select Finger Position</div>
+            <div class="finger-grid mb-3">
+              {% for position in all_positions %}
+              <div class="finger-pick">
+                <input type="radio" class="btn-check" name="finger_position" id="fp_{{ position }}" value="{{ position }}" autocomplete="off" {{ 'disabled' if position in enrolled else '' }} required>
+                <label class="finger-slot d-block {{ 'enrolled' if position in enrolled else '' }}" for="fp_{{ position }}" style="cursor:{{ 'not-allowed' if position in enrolled else 'pointer' }};">
+                  <i class="bi {{ 'bi-check-circle-fill' if position in enrolled else 'bi-fingerprint' }}"></i>
+                  <div class="finger-name">{{ position|replace('_',' ')|title }}</div>
+                  {% if position in enrolled %}<div class="mt-1"><span class="badge-status badge-success" style="font-size:0.6rem;">Done</span></div>{% endif %}
+                </label>
+              </div>
+              {% endfor %}
+            </div>
+            <div class="d-flex justify-content-end">
+              <button type="button" class="btn btn-accent" id="goToCaptureStep" disabled>Continue <i class="bi bi-arrow-right ms-1"></i></button>
+            </div>
+          </div>
+
+          <!-- Step: capture / upload image -->
+          <div class="step-panel" id="stepPanelCapture">
+            <div class="form-section-title mb-3"><i class="bi bi-camera-fill me-2"></i>Capture Fingerprint Image</div>
+
+            <div class="verify-drop" id="fingerprintDropZone">
+              <i class="bi bi-cloud-arrow-up-fill"></i>
+              <p class="mb-1 fw-semibold">Drag &amp; drop a fingerprint scan, or click to browse</p>
+              <p class="text-muted-2" style="font-size:0.8rem;">Accepted from your scanner device — PNG / JPG</p>
+              <input type="file" class="form-control mt-2" id="fingerprintImageInput" name="fingerprint_image" accept="image/*" required style="max-width:320px;margin:0 auto;">
+            </div>
+            <div class="text-center d-none" id="fingerprintPreview">
+              <img id="fingerprintPreviewImg" src="" alt="Fingerprint preview" class="img-fluid rounded-3 border mt-2" style="max-height:220px;">
+            </div>
+
+            <div class="d-flex justify-content-between mt-4">
+              <button type="button" class="btn btn-outline-secondary" id="backToFingerStep"><i class="bi bi-arrow-left me-1"></i>Back</button>
+              <button type="submit" class="btn btn-accent"><i class="bi bi-shield-lock-fill me-1"></i>Encrypt &amp; Enroll Fingerprint</button>
+            </div>
+          </div>
+
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-5">
+    <div class="surface">
+      <div class="surface-header"><h3><i class="bi bi-grid-3x3-gap-fill me-2 text-primary"></i>Enrollment Status</h3></div>
+      <div class="surface-body">
+        <div class="finger-grid">
+          {% for position in all_positions %}
+          <div class="finger-slot {{ 'enrolled' if position in enrolled else '' }}">
+            <i class="bi {{ 'bi-fingerprint' if position in enrolled else 'bi-slash-circle' }}"></i>
+            <div class="finger-name">{{ position|replace('_',' ')|title }}</div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Processing overlay — cosmetic only; the real work happens server-side on submit -->
+<div class="modal-backdrop d-none" id="processingOverlay" style="position:fixed;inset:0;background:rgba(5,20,35,0.82);z-index:2000;display:flex;align-items:center;justify-content:center;">
+  <div class="surface p-4" style="max-width:420px;width:92%;background:#fff;">
+    <div class="text-center mb-3">
+      <div class="spinner-border text-primary mb-2" role="status"></div>
+      <h3 class="h6 mb-0">Securing the fingerprint record…</h3>
+      <p class="text-muted-2" style="font-size:0.8rem;">Please don't close this window.</p>
+    </div>
+    <div class="trust-chain">
+      <div class="chain-node"><div class="chain-marker"><div class="chain-dot"><i class="bi bi-grid-3x3-gap-fill"></i></div><div class="chain-line"></div></div><div class="chain-content"><div class="chain-title" style="font-size:0.85rem;">SourceAFIS Template</div></div></div>
+      <div class="chain-node"><div class="chain-marker"><div class="chain-dot"><i class="bi bi-shield-lock-fill"></i></div><div class="chain-line"></div></div><div class="chain-content"><div class="chain-title" style="font-size:0.85rem;">AES-256-GCM Encryption</div></div></div>
+      <div class="chain-node"><div class="chain-marker"><div class="chain-dot"><i class="bi bi-key-fill"></i></div><div class="chain-line"></div></div><div class="chain-content"><div class="chain-title" style="font-size:0.85rem;">ML-KEM-1024</div></div></div>
+      <div class="chain-node"><div class="chain-marker"><div class="chain-dot"><i class="bi bi-pen-fill"></i></div><div class="chain-line"></div></div><div class="chain-content"><div class="chain-title" style="font-size:0.85rem;">ML-DSA-87 Signature</div></div></div>
+      <div class="chain-node"><div class="chain-marker"><div class="chain-dot"><i class="bi bi-hash"></i></div><div class="chain-line"></div></div><div class="chain-content"><div class="chain-title" style="font-size:0.85rem;">SHA3-256 Integrity</div></div></div>
+      <div class="chain-node"><div class="chain-marker"><div class="chain-dot"><i class="bi bi-hdd-network-fill"></i></div><div class="chain-line"></div></div><div class="chain-content"><div class="chain-title" style="font-size:0.85rem;">Upload to IPFS</div></div></div>
+      <div class="chain-node"><div class="chain-marker"><div class="chain-dot"><i class="bi bi-link-45deg"></i></div></div><div class="chain-content"><div class="chain-title" style="font-size:0.85rem;">Store CID on Blockchain</div></div></div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block page_js %}
+<script src="{{ url_for('static', filename='js/registration.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,231 @@
+{% extends "shared/base.html" %}
+{% block title %}System Architecture & Security{% endblock %}
+{% block body %}
+
+<nav class="app-navbar">
+  <div class="container-fluid px-3 px-lg-4">
+    <div class="d-flex align-items-center justify-content-between">
+      <a href="{{ url_for('index') }}" class="d-flex align-items-center gap-2 text-decoration-none">
+        <div class="brand-mark"><i class="bi bi-shield-check"></i></div>
+        <div class="brand-text">
+          <div class="title">KISAN-ID</div>
+          <div class="subtitle">Secure Farmer Identity Management System</div>
+        </div>
+      </a>
+      <div>
+        <a href="{{ url_for('index') }}" class="btn btn-outline-secondary btn-sm"><i class="bi bi-house me-1"></i>Home</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<header class="hero-home" style="background:linear-gradient(180deg,var(--gov-blue-50) 0%,var(--bg) 100%);padding:48px 0 20px;">
+  <div class="container text-center reveal">
+    <span class="section-eyebrow"><i class="bi bi-cpu-fill me-1"></i>Research &amp; Security Showcase</span>
+    <h1 class="mt-2 mb-3">System Architecture &amp; Cryptographic Pipeline</h1>
+    <p class="lead-muted mx-auto" style="max-width:720px;font-size:1.05rem;">
+      An overview of the hybrid Post-Quantum Cryptographic (PQC) and Decentralized Ledger architecture used to secure farmer identities in KISAN-ID.
+    </p>
+  </div>
+</header>
+
+<section class="py-5">
+  <div class="container">
+    
+    <!-- End-to-End Pipeline Diagram -->
+    <div class="surface mb-5">
+      <div class="surface-header">
+        <h3><i class="bi bi-diagram-3-fill me-2 text-primary"></i>Cryptographic Verification &amp; Enrollment Pipeline</h3>
+        <span class="badge-status badge-success">End-to-End Security</span>
+      </div>
+      <div class="surface-body">
+        <p class="text-muted-2 mb-4">
+          Below is the chronological sequence of biometric template processing, post-quantum key encapsulation, digital signing, integrity hashing, decentralized storage, and on-chain anchoring.
+        </p>
+        
+        <div class="trust-chain chain-horizontal" style="padding:10px 0;">
+          <div class="chain-node done">
+            <div class="chain-marker"><div class="chain-dot">1</div><div class="chain-line"></div></div>
+            <div class="chain-content">
+              <div class="chain-title">SourceAFIS</div>
+              <div class="chain-desc">Minutiae Extraction</div>
+              <span class="chain-tag">Biometric Template</span>
+            </div>
+          </div>
+          
+          <div class="chain-node done">
+            <div class="chain-marker"><div class="chain-dot">2</div><div class="chain-line"></div></div>
+            <div class="chain-content">
+              <div class="chain-title">AES-256-GCM</div>
+              <div class="chain-desc">Symmetric Encryption</div>
+              <span class="chain-tag">Privacy Guard</span>
+            </div>
+          </div>
+          
+          <div class="chain-node done">
+            <div class="chain-marker"><div class="chain-dot">3</div><div class="chain-line"></div></div>
+            <div class="chain-content">
+              <div class="chain-title">ML-KEM-1024</div>
+              <div class="chain-desc">Key Encapsulation</div>
+              <span class="chain-tag">PQC Key Exchange</span>
+            </div>
+          </div>
+          
+          <div class="chain-node done">
+            <div class="chain-marker"><div class="chain-dot">4</div><div class="chain-line"></div></div>
+            <div class="chain-content">
+              <div class="chain-title">ML-DSA-87</div>
+              <div class="chain-desc">Digital Signature</div>
+              <span class="chain-tag">PQC Authentication</span>
+            </div>
+          </div>
+          
+          <div class="chain-node done">
+            <div class="chain-marker"><div class="chain-dot">5</div><div class="chain-line"></div></div>
+            <div class="chain-content">
+              <div class="chain-title">SHA3-256</div>
+              <div class="chain-desc">Integrity Hash</div>
+              <span class="chain-tag">Tamper Detection</span>
+            </div>
+          </div>
+          
+          <div class="chain-node done">
+            <div class="chain-marker"><div class="chain-dot">6</div><div class="chain-line"></div></div>
+            <div class="chain-content">
+              <div class="chain-title">IPFS Storage</div>
+              <div class="chain-desc">Decentralized Upload</div>
+              <span class="chain-tag">Content CID</span>
+            </div>
+          </div>
+          
+          <div class="chain-node done">
+            <div class="chain-marker"><div class="chain-dot">7</div></div>
+            <div class="chain-content">
+              <div class="chain-title">Blockchain Anchor</div>
+              <div class="chain-desc">Immutable Ledger Record</div>
+              <span class="chain-tag">Ethereum Smart Contract</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Core Technology Breakdown Grid -->
+    <div class="row g-4 stagger">
+      
+      <!-- SourceAFIS -->
+      <div class="col-md-6 col-lg-4">
+        <div class="surface h-100 p-4">
+          <div class="d-flex align-items-center gap-3 mb-3">
+            <div class="stat-icon" style="background:var(--gov-blue-700);"><i class="bi bi-fingerprint"></i></div>
+            <h3 class="h5 mb-0">SourceAFIS Matcher</h3>
+          </div>
+          <p class="text-muted-2" style="font-size:0.9rem;">
+            SourceAFIS is an Automated Fingerprint Identification System (AFIS) that extracts biometric minutiae points (ridge endings and bifurcations) from fingerprint scans. It generates a standard template used for biometric comparisons.
+          </p>
+          <ul class="feature-list" style="padding-left: 0; list-style: none; font-size: 0.85rem;">
+            <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i><strong>Function:</strong> Template generation &amp; fast matching</li>
+            <li><i class="bi bi-check-circle-fill text-success me-2"></i><strong>Security focus:</strong> No raw fingerprint images stored</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- AES-256-GCM -->
+      <div class="col-md-6 col-lg-4">
+        <div class="surface h-100 p-4">
+          <div class="d-flex align-items-center gap-3 mb-3">
+            <div class="stat-icon" style="background:var(--gov-blue-700);"><i class="bi bi-shield-lock-fill"></i></div>
+            <h3 class="h5 mb-0">AES-256-GCM</h3>
+          </div>
+          <p class="text-muted-2" style="font-size:0.9rem;">
+            Advanced Encryption Standard (AES) with a 256-bit key operating in Galois/Counter Mode (GCM). This provides both symmetric confidentiality and authenticated integrity verification (AEAD) for the stored fingerprint template.
+          </p>
+          <ul class="feature-list" style="padding-left: 0; list-style: none; font-size: 0.85rem;">
+            <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i><strong>Function:</strong> Authenticated data encryption</li>
+            <li><i class="bi bi-check-circle-fill text-success me-2"></i><strong>Security focus:</strong> Protection of biometric template at rest</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- ML-KEM-1024 -->
+      <div class="col-md-6 col-lg-4">
+        <div class="surface h-100 p-4">
+          <div class="d-flex align-items-center gap-3 mb-3">
+            <div class="stat-icon" style="background:var(--gov-blue-700);"><i class="bi bi-key-fill"></i></div>
+            <h3 class="h5 mb-0">ML-KEM-1024</h3>
+          </div>
+          <p class="text-muted-2" style="font-size:0.9rem;">
+            ML-KEM (Module-Lattice-Based Key Encapsulation Mechanism) is a post-quantum cryptographic algorithm standardized by NIST (FIPS 203). It is designed to exchange symmetric session keys in a way that is secure against quantum computer attacks.
+          </p>
+          <ul class="feature-list" style="padding-left: 0; list-style: none; font-size: 0.85rem;">
+            <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i><strong>Strength:</strong> Equivalent to AES-256 security</li>
+            <li><i class="bi bi-check-circle-fill text-success me-2"></i><strong>Security focus:</strong> Quantum-resistant key exchange</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- ML-DSA-87 -->
+      <div class="col-md-6 col-lg-4">
+        <div class="surface h-100 p-4">
+          <div class="d-flex align-items-center gap-3 mb-3">
+            <div class="stat-icon" style="background:var(--gov-blue-700);"><i class="bi bi-pen-fill"></i></div>
+            <h3 class="h5 mb-0">ML-DSA-87</h3>
+          </div>
+          <p class="text-muted-2" style="font-size:0.9rem;">
+            ML-DSA (Module-Lattice-Based Digital Signature Algorithm) is a lattice-based signature scheme standardized by NIST (FIPS 204). It provides mathematical proof of authenticity and integrity for each enrolled digital identity.
+          </p>
+          <ul class="feature-list" style="padding-left: 0; list-style: none; font-size: 0.85rem;">
+            <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i><strong>Strength:</strong> Highest NIST security level (Category 5)</li>
+            <li><i class="bi bi-check-circle-fill text-success me-2"></i><strong>Security focus:</strong> Post-quantum identity authentication</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- SHA3-256 -->
+      <div class="col-md-6 col-lg-4">
+        <div class="surface h-100 p-4">
+          <div class="d-flex align-items-center gap-3 mb-3">
+            <div class="stat-icon" style="background:var(--gov-blue-700);"><i class="bi bi-hash"></i></div>
+            <h3 class="h5 mb-0">SHA3-256 Hash</h3>
+          </div>
+          <p class="text-muted-2" style="font-size:0.9rem;">
+            Keccak-based Secure Hash Algorithm (SHA-3) is the latest hashing standard by NIST. It computes a fixed-size cryptographic digest of the encrypted package to seal data integrity before committing it to storage.
+          </p>
+          <ul class="feature-list" style="padding-left: 0; list-style: none; font-size: 0.85rem;">
+            <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i><strong>Function:</strong> Cryptographic integrity verification</li>
+            <li><i class="bi bi-check-circle-fill text-success me-2"></i><strong>Security focus:</strong> Detects unauthorized data alterations</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- IPFS & Blockchain -->
+      <div class="col-md-6 col-lg-4">
+        <div class="surface h-100 p-4">
+          <div class="d-flex align-items-center gap-3 mb-3">
+            <div class="stat-icon" style="background:var(--gov-blue-700);"><i class="bi bi-link-45deg"></i></div>
+            <h3 class="h5 mb-0">IPFS + Blockchain</h3>
+          </div>
+          <p class="text-muted-2" style="font-size:0.9rem;">
+            A decentralized storage strategy. Encrypted packages containing the signed templates are stored on InterPlanetary File System (IPFS) to obtain a Content Identifier (CID). The CID and SHA-3 hash are then anchored on the Ethereum blockchain.
+          </p>
+          <ul class="feature-list" style="padding-left: 0; list-style: none; font-size: 0.85rem;">
+            <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i><strong>Function:</strong> Decentralized data anchoring</li>
+            <li><i class="bi bi-check-circle-fill text-success me-2"></i><strong>Security focus:</strong> Avoids single point of failure (SPOF)</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Live Performance stats / testing disclaimer -->
+    <div class="surface mt-5 p-4" style="background:var(--card-alt);">
+      <h3 class="h6 mb-2 text-primary"><i class="bi bi-info-circle-fill me-1"></i>Note for Examiners</h3>
+      <p class="mb-0 text-muted-2" style="font-size:0.85rem;">
+        This implementation integrates real bindings to <code>liboqs</code> for ML-KEM and ML-DSA, running in a native Python backend environment. The matching engine relies on a JVM-bridged SourceAFIS instance. No cryptographic simulation is used.
+      </p>
+    </div>
+
+  </div>
+</section>
+
+{% endblock %}

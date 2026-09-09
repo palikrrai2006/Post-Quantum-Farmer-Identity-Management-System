@@ -1,0 +1,36 @@
+/* ===================================================================
+   Light, purposeful animation
+   =================================================================== */
+@keyframes fadeInUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes spinSoft { to { transform: rotate(360deg); } }
+
+.fade-in-up { animation: fadeInUp 0.5s ease both; }
+.fade-in { animation: fadeIn 0.6s ease both; }
+
+.reveal { opacity: 0; transform: translateY(16px); transition: opacity 0.6s ease, transform 0.6s ease; }
+.reveal.in-view { opacity: 1; transform: translateY(0); }
+
+.stagger > * { opacity: 0; transform: translateY(14px); animation: fadeInUp 0.5s ease forwards; }
+.stagger > *:nth-child(1) { animation-delay: 0.05s; }
+.stagger > *:nth-child(2) { animation-delay: 0.13s; }
+.stagger > *:nth-child(3) { animation-delay: 0.21s; }
+.stagger > *:nth-child(4) { animation-delay: 0.29s; }
+.stagger > *:nth-child(5) { animation-delay: 0.37s; }
+.stagger > *:nth-child(6) { animation-delay: 0.45s; }
+
+.spinner-soft {
+  width: 18px; height: 18px; border-radius: 50%;
+  border: 2.5px solid rgba(255,255,255,0.35); border-top-color: #fff;
+  animation: spinSoft 0.7s linear infinite; display: inline-block;
+}
+
+.pulse-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--gov-green-500); display: inline-block; position: relative; }
+.pulse-dot::after {
+  content: ""; position: absolute; inset: 0; border-radius: 50%; background: var(--gov-green-500);
+  animation: pulseRing 1.6s ease-out infinite;
+}
+@keyframes pulseRing { 0% { transform: scale(1); opacity: 0.6; } 100% { transform: scale(2.6); opacity: 0; } }
+
+@keyframes fadeOut { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-10px); } }
+.fade-out-msg { animation: fadeOut 0.4s ease forwards !important; }

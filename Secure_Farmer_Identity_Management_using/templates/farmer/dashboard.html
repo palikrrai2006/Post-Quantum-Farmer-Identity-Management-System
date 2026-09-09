@@ -1,0 +1,104 @@
+{% extends "shared/dashboard_layout.html" %}
+{% block title %}Farmer Dashboard{% endblock %}
+{% block body_class %}portal-farmer{% endblock %}
+{% block page_title %}Welcome back{{ ', ' ~ farmer.name if farmer and farmer.name else '' }}{% endblock %}
+{% block page_subtitle %}Your secure farmer identity, land and benefits — in one place.{% endblock %}
+{% block page_actions %}
+<a href="{{ url_for('farmer_fingerprints') }}" class="btn btn-accent"><i class="bi bi-fingerprint me-1"></i>Enrollment Status</a>
+{% endblock %}
+
+{% block content %}
+
+<div class="profile-banner mb-4 fade-in-up">
+  <div class="row align-items-center g-4">
+    <div class="col-auto">
+      <div class="avatar-ring">{{ (farmer.name[0] if farmer and farmer.name else 'F')|upper }}</div>
+    </div>
+    <div class="col">
+      <h2 class="h4 text-white mb-1">{{ farmer.name if farmer and farmer.name else 'Farmer Name Unavailable' }}</h2>
+      <div class="d-flex flex-wrap gap-3 align-items-center">
+        <span class="id-pill"><i class="bi bi-person-badge me-1"></i>{{ farmer.farmer_id if farmer and farmer.farmer_id else session.farmer_id }}</span>
+        {% if farmer and farmer.village %}<span class="text-white-50" style="font-size:0.85rem;"><i class="bi bi-geo-alt-fill me-1"></i>{{ farmer.village }}{{ ', ' ~ farmer.district if farmer.district else '' }}</span>{% endif %}
+        <span class="badge-status badge-success"><i class="bi bi-patch-check-fill me-1"></i>Identity Verified</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="dash-grid mb-4 stagger">
+  <a href="{{ url_for('farmer_profile') }}" class="text-decoration-none">
+    <div class="stat-card">
+      <div class="stat-icon"><i class="bi bi-person-badge"></i></div>
+      <div><div class="stat-value">My</div><div class="stat-label">Profile Details</div></div>
+    </div>
+  </a>
+  <a href="{{ url_for('farmer_fingerprints') }}" class="text-decoration-none">
+    <div class="stat-card">
+      <div class="stat-icon"><i class="bi bi-fingerprint"></i></div>
+      <div><div class="stat-value">Fingerprints</div><div class="stat-label">Enrollment status</div></div>
+    </div>
+  </a>
+  <a href="{{ url_for('farmer_land') }}" class="text-decoration-none">
+    <div class="stat-card">
+      <div class="stat-icon"><i class="bi bi-geo-alt-fill"></i></div>
+      <div><div class="stat-value">Land</div><div class="stat-label">Records on file</div></div>
+    </div>
+  </a>
+  <a href="{{ url_for('farmer_benefits') }}" class="text-decoration-none">
+    <div class="stat-card">
+      <div class="stat-icon"><i class="bi bi-cash-coin"></i></div>
+      <div><div class="stat-value">Benefits</div><div class="stat-label">Received &amp; pending</div></div>
+    </div>
+  </a>
+  <a href="{{ url_for('farmer_schemes') }}" class="text-decoration-none">
+    <div class="stat-card">
+      <div class="stat-icon"><i class="bi bi-award-fill"></i></div>
+      <div><div class="stat-value">Schemes</div><div class="stat-label">Active government schemes</div></div>
+    </div>
+  </a>
+</div>
+
+<div class="row g-4">
+  <div class="col-lg-7">
+    <div class="surface h-100">
+      <div class="surface-header">
+        <h3><i class="bi bi-diagram-3 me-2 text-success"></i>Your Identity Trust Chain</h3>
+        <span class="badge-status badge-success">Complete</span>
+      </div>
+      <div class="surface-body">
+        <div class="trust-chain">
+          <div class="chain-node done">
+            <div class="chain-marker"><div class="chain-dot"><i class="bi bi-fingerprint"></i></div><div class="chain-line"></div></div>
+            <div class="chain-content"><div class="chain-title">Fingerprint Enrolled</div><div class="chain-desc">SourceAFIS template generated</div></div>
+          </div>
+          <div class="chain-node done">
+            <div class="chain-marker"><div class="chain-dot"><i class="bi bi-shield-lock-fill"></i></div><div class="chain-line"></div></div>
+            <div class="chain-content"><div class="chain-title">Encrypted &amp; Signed</div><div class="chain-desc">AES-256-GCM, ML-KEM-1024, ML-DSA-87</div></div>
+          </div>
+          <div class="chain-node done">
+            <div class="chain-marker"><div class="chain-dot"><i class="bi bi-hdd-network-fill"></i></div></div>
+            <div class="chain-content"><div class="chain-title">Anchored on IPFS &amp; Blockchain</div><div class="chain-desc">Ready for government verification</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-5">
+    <div class="surface h-100">
+      <div class="surface-header"><h3><i class="bi bi-bell-fill me-2 text-warning"></i>Notifications</h3></div>
+      <div class="surface-body">
+        <!-- TODO: backend does not currently supply a notifications feed for this route -->
+        <div class="d-flex gap-3 align-items-start mb-3">
+          <div class="stat-icon" style="width:38px;height:38px;font-size:1rem;background:var(--gov-blue-100);color:var(--gov-blue-700);"><i class="bi bi-info-circle-fill"></i></div>
+          <div><div class="fw-semibold" style="font-size:0.88rem;">Welcome to KISAN-ID</div><div class="text-muted-2" style="font-size:0.8rem;">Check your Benefits and Schemes tabs for the latest updates.</div></div>
+        </div>
+        <div class="d-flex gap-3 align-items-start">
+          <div class="stat-icon" style="width:38px;height:38px;font-size:1rem;background:var(--gov-green-100);color:var(--gov-green-700);"><i class="bi bi-shield-check"></i></div>
+          <div><div class="fw-semibold" style="font-size:0.88rem;">Identity secured</div><div class="text-muted-2" style="font-size:0.8rem;">Your record is encrypted and anchored on-chain.</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

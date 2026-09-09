@@ -1,0 +1,78 @@
+{% extends "shared/base.html" %}
+
+{% block title %}Registration Center Login{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid bg-light min-vh-100 d-flex align-items-center">
+
+<div class="row w-100 justify-content-center">
+
+<div class="col-lg-5">
+
+<div class="card shadow-lg border-0">
+
+<div class="card-header bg-primary text-white text-center py-4">
+
+<h2>
+<i class="bi bi-building"></i>
+Registration Center
+</h2>
+
+<p class="mb-0">
+Authorized Registration Operators
+</p>
+
+</div>
+
+<div class="card-body p-5">
+
+{% include "shared/messages.html" %}
+
+<form method="POST">
+
+<div class="mb-3">
+
+<label>Username</label>
+
+<input
+class="form-control"
+type="text"
+name="username"
+required>
+
+</div>
+
+<div class="mb-3">
+
+<label>Password</label>
+
+<input
+class="form-control"
+type="password"
+name="password"
+required>
+
+</div>
+
+<button class="btn btn-primary w-100 btn-lg">
+
+<i class="bi bi-box-arrow-in-right"></i>
+
+Login
+
+</button>
+
+</form>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+{% endblock %}

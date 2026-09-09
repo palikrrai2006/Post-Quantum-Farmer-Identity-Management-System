@@ -1,0 +1,86 @@
+{% extends "shared/dashboard_layout.html" %}
+{% block title %}Audit Logs{% endblock %}
+{% block body_class %}portal-government{% endblock %}
+{% block breadcrumbs %}
+<div class="breadcrumb-bar"><a href="{{ url_for('government_dashboard') }}">Dashboard</a><span class="sep">/</span>Audit Logs</div>
+{% endblock %}
+{% block page_title %}<i class="bi bi-journal-text me-2"></i>System Audit Log{% endblock %}
+{% block page_subtitle %}Complete record of all portal actions across Farmer, Registration Center, and Government portals.{% endblock %}
+
+{% block content %}
+
+{% include "shared/messages.html" %}
+
+<div class="surface">
+  <div class="surface-header">
+    <div class="d-flex align-items-center gap-3">
+      <h3><i class="bi bi-journal-code me-2 text-primary"></i>Audit Entries</h3>
+      <span class="badge-status badge-info">{{ logs|length if logs else 0 }} Records</span>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+      <input type="text" class="form-control form-control-sm" id="auditSearch" placeholder="Filter entries…" style="width:220px;" oninput="filterTable()">
+    </div>
+  </div>
+
+  {% if logs and logs|length > 0 %}
+  <div class="table-responsive">
+    <table class="table table-modern mb-0" id="auditTable">
+      <thead>
+        <tr>
+          <th>Timestamp</th>
+          <th>User ID</th>
+          <th>Role</th>
+          <th>Action</th>
+          <th>Target Farmer</th>
+          <th>IP Address</th>
+          <th>Result</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for log in logs %}
+        <tr>
+          <td class="text-mono" style="font-size:0.78rem;white-space:nowrap;">{{ log.timestamp }}</td>
+          <td><span class="badge-status badge-neutral">{{ log.user_id or '—' }}</span></td>
+          <td>
+            {% set r = (log.role or '')|lower %}
+            {% if 'farmer' in r %}<span class="badge-status badge-success">Farmer</span>
+            {% elif 'government' in r or 'officer' in r %}<span class="badge-status badge-info">Gov Officer</span>
+            {% elif 'registration' in r or 'center' in r %}<span class="badge-status badge-neutral">Operator</span>
+            {% elif 'admin' in r %}<span class="badge-status badge-warning">Admin</span>
+            {% else %}<span class="badge-status badge-neutral">{{ (log.role or '—')|replace('_',' ')|title }}</span>
+            {% endif %}
+          </td>
+          <td class="fw-semibold" style="font-size:0.88rem;">{{ log.action }}</td>
+          <td class="text-mono" style="font-size:0.78rem;">{{ log.target_farmer_id or '—' }}</td>
+          <td class="text-mono" style="font-size:0.78rem;">{{ log.ip_address or '—' }}</td>
+          <td>
+            {% if log.result == 'FAILED' %}<span class="badge-status badge-danger"><i class="bi bi-x-circle me-1"></i>Failed</span>
+            {% else %}<span class="badge-status badge-success"><i class="bi bi-check-circle me-1"></i>Success</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div class="empty-state">
+    <i class="bi bi-journal-text"></i>
+    <div class="fw-semibold">No audit entries yet</div>
+    <div style="font-size:0.85rem;">Portal activity will be recorded here automatically.</div>
+  </div>
+  {% endif %}
+</div>
+
+{% endblock %}
+
+{% block page_js %}
+<script>
+function filterTable() {
+  const q = document.getElementById('auditSearch').value.toLowerCase();
+  document.querySelectorAll('#auditTable tbody tr').forEach(row => {
+    row.style.display = row.textContent.toLowerCase().includes(q) ? '' : 'none';
+  });
+}
+</script>
+{% endblock %}

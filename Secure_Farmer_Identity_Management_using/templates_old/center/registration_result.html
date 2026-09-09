@@ -1,0 +1,449 @@
+{% extends "shared/base.html" %}
+
+{% block title %}Registration Completed{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid py-4">
+
+    <!-- Success Banner -->
+
+    <div class="alert alert-success shadow">
+
+        <div class="row align-items-center">
+
+            <div class="col-md-2 text-center">
+
+                <i class="bi bi-check-circle-fill display-1"></i>
+
+            </div>
+
+            <div class="col-md-10">
+
+                <h2>
+
+                    Farmer Registration Completed Successfully
+
+                </h2>
+
+                <p class="mb-0">
+
+                    The farmer has been securely enrolled into the
+                    Government Identity Management System.
+
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Farmer Information -->
+
+    <div class="card shadow border-0 mb-4">
+
+        <div class="card-header bg-primary text-white">
+
+            <h4>
+
+                Farmer Information
+
+            </h4>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <div class="col-md-6">
+
+                    <table class="table table-bordered">
+
+                        <tr>
+                            <th>Farmer ID</th>
+                            <td>{{ farmer.farmer_id }}</td>
+                        </tr>
+
+                        <tr>
+                            <th>Name</th>
+                            <td>{{ farmer.name }}</td>
+                        </tr>
+
+                        <tr>
+                            <th>Date of Birth</th>
+                            <td>{{ farmer.date_of_birth }}</td>
+                        </tr>
+
+                        <tr>
+                            <th>Gender</th>
+                            <td>{{ farmer.gender }}</td>
+                        </tr>
+
+                    </table>
+
+                </div>
+
+                <div class="col-md-6">
+
+                    <table class="table table-bordered">
+
+                        <tr>
+                            <th>Phone</th>
+                            <td>{{ farmer.phone }}</td>
+                        </tr>
+
+                        <tr>
+                            <th>Village</th>
+                            <td>{{ farmer.village }}</td>
+                        </tr>
+
+                        <tr>
+                            <th>Taluk</th>
+                            <td>{{ farmer.taluk }}</td>
+                        </tr>
+
+                        <tr>
+                            <th>District</th>
+                            <td>{{ farmer.district }}</td>
+                        </tr>
+
+                        <tr>
+                            <th>State</th>
+                            <td>{{ farmer.state }}</td>
+                        </tr>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Fingerprint Summary -->
+
+    <div class="card shadow border-0 mb-4">
+
+        <div class="card-header bg-success text-white">
+
+            <h4>
+
+                Registered Fingerprints
+
+            </h4>
+
+        </div>
+
+        <div class="card-body">
+
+            {% if fingers %}
+
+            <table class="table table-hover">
+
+                <thead class="table-light">
+
+                    <tr>
+
+                        <th>#</th>
+
+                        <th>Finger Position</th>
+
+                        <th>Status</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                {% for finger in fingers %}
+
+                    <tr>
+
+                        <td>
+
+                            {{ loop.index }}
+
+                        </td>
+
+                        <td>
+
+                            {{ finger.finger_position }}
+
+                        </td>
+
+                        <td>
+
+                            <span class="badge bg-success">
+
+                                Registered
+
+                            </span>
+
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+            {% else %}
+
+            <div class="alert alert-warning">
+
+                No fingerprints enrolled.
+
+            </div>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+    <!-- Security Workflow -->
+
+    <div class="card shadow border-0 mb-4">
+
+        <div class="card-header bg-dark text-white">
+
+            <h4>
+
+                Secure Registration Pipeline
+
+            </h4>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="row text-center">
+
+                <div class="col">
+
+                    <div class="card border-success">
+
+                        <div class="card-body">
+
+                            <i class="bi bi-person-plus-fill display-5 text-success"></i>
+
+                            <h6 class="mt-2">
+
+                                Registration
+
+                            </h6>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="col">
+
+                    ➜
+
+                </div>
+
+                <div class="col">
+
+                    <div class="card border-primary">
+
+                        <div class="card-body">
+
+                            <i class="bi bi-fingerprint display-5 text-primary"></i>
+
+                            <h6>
+
+                                SourceAFIS
+
+                            </h6>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="col">
+
+                    ➜
+
+                </div>
+
+                <div class="col">
+
+                    <div class="card border-warning">
+
+                        <div class="card-body">
+
+                            <i class="bi bi-shield-lock display-5 text-warning"></i>
+
+                            <h6>
+
+                                AES-256-GCM
+
+                            </h6>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="col">
+
+                    ➜
+
+                </div>
+
+                <div class="col">
+
+                    <div class="card border-danger">
+
+                        <div class="card-body">
+
+                            <i class="bi bi-key-fill display-5 text-danger"></i>
+
+                            <h6>
+
+                                ML-KEM-1024
+
+                            </h6>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="col">
+
+                    ➜
+
+                </div>
+
+                <div class="col">
+
+                    <div class="card border-secondary">
+
+                        <div class="card-body">
+
+                            <i class="bi bi-patch-check-fill display-5 text-secondary"></i>
+
+                            <h6>
+
+                                ML-DSA-87
+
+                            </h6>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="col">
+
+                    ➜
+
+                </div>
+
+                <div class="col">
+
+                    <div class="card border-info">
+
+                        <div class="card-body">
+
+                            <i class="bi bi-cloud-upload-fill display-5 text-info"></i>
+
+                            <h6>
+
+                                IPFS
+
+                            </h6>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="col">
+
+                    ➜
+
+                </div>
+
+                <div class="col">
+
+                    <div class="card border-dark">
+
+                        <div class="card-body">
+
+                            <i class="bi bi-hdd-network-fill display-5"></i>
+
+                            <h6>
+
+                                Blockchain
+
+                            </h6>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Completion Status -->
+
+    <div class="card shadow border-0">
+
+        <div class="card-body text-center">
+
+            <h3 class="text-success">
+
+                Registration Status
+
+            </h3>
+
+            <div class="progress my-4" style="height:30px;">
+
+                <div class="progress-bar bg-success progress-bar-striped progress-bar-animated"
+                     style="width:100%;">
+
+                    100% Completed
+
+                </div>
+
+            </div>
+
+            <a href="{{ url_for('center_dashboard') }}"
+               class="btn btn-primary btn-lg">
+
+                <i class="bi bi-house-fill"></i>
+
+                Return to Dashboard
+
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,61 @@
+{% extends "shared/dashboard_layout.html" %}
+{% block title %}Government Schemes{% endblock %}
+{% block body_class %}portal-government{% endblock %}
+{% block breadcrumbs %}
+<div class="breadcrumb-bar"><a href="{{ url_for('government_dashboard') }}">Dashboard</a><span class="sep">/</span>Government Schemes</div>
+{% endblock %}
+{% block page_title %}Government Schemes{% endblock %}
+{% block page_subtitle %}Create and manage schemes available to enrolled farmers.{% endblock %}
+{% block page_actions %}
+<button type="button" class="btn btn-accent" data-bs-toggle="modal" data-bs-target="#addSchemeModal"><i class="bi bi-plus-lg me-1"></i>New Scheme</button>
+{% endblock %}
+
+{% block content %}
+{% if schemes and schemes|length > 0 %}
+<div class="row g-4 stagger">
+  {% for scheme in schemes %}
+  <div class="col-md-6 col-lg-4">
+    <div class="surface h-100">
+      <div class="surface-body">
+        <div class="d-flex justify-content-between align-items-start mb-2">
+          <div class="stat-icon"><i class="bi bi-award-fill"></i></div>
+          {% set status = (scheme.status or 'ACTIVE')|upper %}
+          {% if status == 'ACTIVE' %}<span class="badge-status badge-success">Active</span>
+          {% elif status == 'CLOSED' %}<span class="badge-status badge-neutral">Closed</span>
+          {% else %}<span class="badge-status badge-info">{{ scheme.status }}</span>{% endif %}
+        </div>
+        <h3 class="h6 mt-2">{{ scheme.scheme_name }}</h3>
+        <p class="text-muted-2" style="font-size:0.85rem;">{{ scheme.description }}</p>
+        {% if scheme.eligibility %}<div class="form-hint"><i class="bi bi-check2-circle me-1"></i>{{ scheme.eligibility }}</div>{% endif %}
+        {% if scheme.start_date or scheme.end_date %}<div class="form-hint mt-1"><i class="bi bi-calendar-event me-1"></i>{{ scheme.start_date or '—' }} to {{ scheme.end_date or 'ongoing' }}</div>{% endif %}
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div class="surface"><div class="empty-state">
+  <i class="bi bi-award"></i>
+  <div class="fw-semibold mb-1">No schemes created yet</div>
+  <div style="font-size:0.85rem;">Use "New Scheme" to publish the first government scheme.</div>
+</div></div>
+{% endif %}
+
+<div class="modal fade" id="addSchemeModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <form method="POST" action="{{ url_for('government_schemes_view') }}" class="modal-content">
+      <div class="modal-header"><h5 class="modal-title">Create Government Scheme</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+      <div class="modal-body">
+        <div class="mb-3"><label class="form-label">Scheme Name</label><input type="text" name="scheme_name" class="form-control" required></div>
+        <div class="mb-3"><label class="form-label">Description</label><textarea name="description" class="form-control" rows="3"></textarea></div>
+        <div class="mb-3"><label class="form-label">Eligibility</label><input type="text" name="eligibility" class="form-control" placeholder="e.g. Small and marginal farmers"></div>
+        <div class="row g-3">
+          <div class="col-6"><label class="form-label">Start Date</label><input type="date" name="start_date" class="form-control"></div>
+          <div class="col-6"><label class="form-label">End Date</label><input type="date" name="end_date" class="form-control"></div>
+        </div>
+      </div>
+      <div class="modal-footer"><button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button><button type="submit" class="btn btn-accent">Create Scheme</button></div>
+    </form>
+  </div>
+</div>
+{% endblock %}

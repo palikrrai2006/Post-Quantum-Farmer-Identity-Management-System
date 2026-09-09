@@ -1,0 +1,253 @@
+{% extends "shared/dashboard_layout.html" %}
+{% block title %}Farmer Details{% endblock %}
+{% block body_class %}portal-government{% endblock %}
+{% block breadcrumbs %}
+<div class="breadcrumb-bar"><a href="{{ url_for('government_dashboard') }}">Dashboard</a><span class="sep">/</span><a href="{{ url_for('government_farmer_search') }}">Search Farmer</a><span class="sep">/</span>{{ farmer.name if farmer else 'Farmer' }}</div>
+{% endblock %}
+{% block page_title %}{{ farmer.name if farmer else 'Farmer Details' }}{% endblock %}
+{% block page_subtitle %}Farmer ID: <span class="text-mono">{{ farmer.farmer_id if farmer else '—' }}</span>{% endblock %}
+
+{% block content %}
+
+{% set positions_enrolled = enrolled_positions if enrolled_positions is defined else (fingers|map(attribute='finger_position')|list) %}
+
+<!-- Verification result banner -->
+{% if verify_error is defined and verify_error %}
+<div class="result-banner no-match mb-4 fade-in-up">
+  <div class="result-icon"><i class="bi bi-x-lg"></i></div>
+  <div>
+    <h2 class="h5 mb-1">{{ verify_error }}</h2>
+    <div class="text-muted-2">The submitted fingerprint could not be matched to this farmer's enrolled record.</div>
+  </div>
+</div>
+{% elif verify_result is defined and verify_result %}
+<div class="result-banner match mb-4 fade-in-up">
+  <div class="result-icon"><i class="bi bi-patch-check-fill"></i></div>
+  <div class="flex-grow-1">
+    <h2 class="h5 mb-1">Identity Verified &mdash; MATCH</h2>
+    <div class="row g-2 mt-2">
+      <div class="col-sm-3"><div class="metric-tile"><div class="metric-label">Score</div><div class="metric-value">{{ verify_result.score|default('—') }}</div></div></div>
+      <div class="col-sm-3"><div class="metric-tile"><div class="metric-label">Threshold</div><div class="metric-value">{{ verify_result.threshold|default('—') }}</div></div></div>
+      <div class="col-sm-3"><div class="metric-tile"><div class="metric-label">CID</div><div class="metric-value">{{ verify_result.cid|default('—') }}</div></div></div>
+      <div class="col-sm-3"><div class="metric-tile"><div class="metric-label">Tx Hash</div><div class="metric-value">{{ verify_result.tx_hash|default(verify_result.transaction_hash|default('—')) }}</div></div></div>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+<div class="row g-4">
+  <div class="col-lg-4">
+    <div class="surface mb-4">
+      <div class="surface-body text-center">
+        <div class="avatar-ring mx-auto mb-3" style="background:var(--gov-blue-100);color:var(--gov-blue-700);border-color:var(--gov-blue-500);">{{ (farmer.name[0] if farmer and farmer.name else 'F')|upper }}</div>
+        <h3 class="h5 mb-1">{{ farmer.name if farmer else '—' }}</h3>
+        <div class="id-pill text-mono" style="background:var(--gov-blue-50);color:var(--gov-blue-700);">{{ farmer.farmer_id if farmer else '—' }}</div>
+        <div class="row g-2 mt-3 text-start">
+          <div class="col-6"><div class="metric-tile"><div class="metric-label">Phone</div><div class="metric-value" style="font-family:inherit;">{{ farmer.phone if farmer else '—' }}</div></div></div>
+          <div class="col-6"><div class="metric-tile"><div class="metric-label">Gender</div><div class="metric-value" style="font-family:inherit;">{{ farmer.gender if farmer else '—' }}</div></div></div>
+          <div class="col-12"><div class="metric-tile"><div class="metric-label">Address</div><div class="metric-value" style="font-family:inherit;">{{ farmer.address if farmer else '—' }}</div></div></div>
+          <div class="col-6"><div class="metric-tile"><div class="metric-label">Village</div><div class="metric-value" style="font-family:inherit;">{{ farmer.village if farmer else '—' }}</div></div></div>
+          <div class="col-6"><div class="metric-tile"><div class="metric-label">District</div><div class="metric-value" style="font-family:inherit;">{{ farmer.district if farmer else '—' }}</div></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="surface">
+      <div class="surface-header"><h3><i class="bi bi-fingerprint me-2 text-primary"></i>Enrolled Fingerprints</h3></div>
+      <div class="surface-body">
+        <div class="finger-grid">
+          {% for finger in fingers %}
+          <div class="finger-slot enrolled"><i class="bi bi-check-circle-fill"></i><div class="finger-name">{{ finger.finger_position|replace('_',' ')|title }}</div></div>
+          {% else %}
+          <div class="empty-state" style="padding:20px;"><i class="bi bi-fingerprint" style="font-size:1.6rem;"></i><div style="font-size:0.82rem;">No fingerprints enrolled</div></div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-8">
+    <!-- Verification panel -->
+    <div class="surface mb-4">
+      <div class="surface-header"><h3><i class="bi bi-shield-lock-fill me-2 text-primary"></i>Verify Identity</h3></div>
+      <div class="surface-body">
+        <form method="POST" action="{{ url_for('government_verify', farmer_id=farmer.farmer_id) }}" enctype="multipart/form-data" id="verifyForm">
+          <div class="row g-3 align-items-end mb-3">
+            <div class="col-md-5">
+              <label class="form-label" for="finger_position">Finger Position</label>
+              <select class="form-select" id="finger_position" name="finger_position" required>
+                {% for finger in fingers %}
+                <option value="{{ finger.finger_position }}">{{ finger.finger_position|replace('_',' ')|title }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="col-md-7">
+              <div class="form-hint mb-0"><i class="bi bi-info-circle me-1"></i>Capture the same finger at the point of verification for matching against the encrypted enrolled template.</div>
+            </div>
+          </div>
+
+          <div class="verify-drop" id="verifyDropZone">
+            <i class="bi bi-cloud-arrow-up-fill"></i>
+            <p class="mb-1 fw-semibold">Upload the live fingerprint scan</p>
+            <p class="text-muted-2" style="font-size:0.8rem;">PNG / JPG from the connected scanner</p>
+            <input type="file" class="form-control mt-2" id="verifyImageInput" name="fingerprint_image" accept="image/*" required style="max-width:320px;margin:0 auto;">
+          </div>
+          <div class="text-center d-none" id="verifyPreview">
+            <img id="verifyPreviewImg" src="" alt="Fingerprint preview" class="img-fluid rounded-3 border mt-2" style="max-height:200px;">
+          </div>
+
+          <div class="d-flex justify-content-end mt-3">
+            <button type="submit" class="btn btn-accent" id="verifySubmitBtn"><i class="bi bi-shield-check me-1"></i>Run Verification</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Land records -->
+    <div class="surface mb-4">
+      <div class="surface-header">
+        <h3><i class="bi bi-geo-alt-fill me-2 text-primary"></i>Land Records</h3>
+        <button type="button" class="btn btn-sm btn-accent" data-bs-toggle="modal" data-bs-target="#addLandModal"><i class="bi bi-plus-lg me-1"></i>Add Record</button>
+      </div>
+      {% if land and land|length > 0 %}
+      <div class="table-responsive">
+        <table class="table table-modern mb-0">
+          <thead><tr><th>Survey No.</th><th>Area</th><th>Location</th><th>Type</th><th>Ownership</th></tr></thead>
+          <tbody>
+            {% for record in land %}
+            <tr>
+              <td class="text-mono">{{ record.survey_number }}</td>
+              <td>{{ record.land_area }} {{ record.area_unit }}</td>
+              <td>{{ record.village }}, {{ record.district }}</td>
+              <td><span class="badge-status badge-info">{{ record.land_type }}</span></td>
+              <td>{{ record.ownership_type }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+      <div class="empty-state"><i class="bi bi-map"></i><div class="fw-semibold">No land records</div></div>
+      {% endif %}
+    </div>
+
+    <!-- Benefits -->
+    <div class="surface">
+      <div class="surface-header">
+        <h3><i class="bi bi-cash-coin me-2 text-primary"></i>Benefits</h3>
+        <button type="button" class="btn btn-sm btn-accent" data-bs-toggle="modal" data-bs-target="#addBenefitModal"><i class="bi bi-plus-lg me-1"></i>Add Benefit</button>
+      </div>
+      {% if benefits and benefits|length > 0 %}
+      <div class="table-responsive">
+        <table class="table table-modern mb-0">
+          <thead><tr><th>Benefit</th><th>Amount (₹)</th><th>Status</th><th></th></tr></thead>
+          <tbody>
+            {% for benefit in benefits %}
+            <tr>
+              <td class="fw-semibold">{{ benefit.benefit_name }}</td>
+              <td class="text-mono">{{ '%.2f'|format(benefit.amount) if benefit.amount is not none else '—' }}</td>
+              <td>
+                {% set status = (benefit.status or '')|upper %}
+                {% if status == 'PAID' %}<span class="badge-status badge-success">Paid</span>
+                {% elif status == 'APPROVED' %}<span class="badge-status badge-info">Approved</span>
+                {% elif status == 'REJECTED' %}<span class="badge-status badge-danger">Rejected</span>
+                {% else %}<span class="badge-status badge-warning">Pending</span>{% endif %}
+              </td>
+              <td class="text-end">
+                <div class="d-flex gap-1 justify-content-end flex-wrap">
+                  {% if status == 'PENDING' or not status %}
+                  <form method="POST" action="{{ url_for('government_manage_benefits', farmer_id=farmer.farmer_id) }}" class="d-inline">
+                    <input type="hidden" name="action" value="approve"><input type="hidden" name="benefit_id" value="{{ benefit.benefit_id }}">
+                    <button type="submit" class="btn btn-sm btn-success-soft">Approve</button>
+                  </form>
+                  <form method="POST" action="{{ url_for('government_manage_benefits', farmer_id=farmer.farmer_id) }}" class="d-inline">
+                    <input type="hidden" name="action" value="reject"><input type="hidden" name="benefit_id" value="{{ benefit.benefit_id }}">
+                    <button type="submit" class="btn btn-sm btn-outline-danger">Reject</button>
+                  </form>
+                  {% elif status == 'APPROVED' %}
+                  <form method="POST" action="{{ url_for('government_manage_benefits', farmer_id=farmer.farmer_id) }}" class="d-flex gap-1">
+                    <input type="hidden" name="action" value="pay"><input type="hidden" name="benefit_id" value="{{ benefit.benefit_id }}">
+                    <input type="text" name="payment_reference" class="form-control form-control-sm" placeholder="Payment ref." style="width:130px;" required>
+                    <button type="submit" class="btn btn-sm btn-accent">Mark Paid</button>
+                  </form>
+                  {% endif %}
+                </div>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+      <div class="empty-state"><i class="bi bi-cash-coin"></i><div class="fw-semibold">No benefits recorded</div></div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<!-- Add land record modal -->
+<div class="modal fade" id="addLandModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <form method="POST" action="{{ url_for('government_manage_land', farmer_id=farmer.farmer_id) }}" class="modal-content">
+      <div class="modal-header"><h5 class="modal-title">Add Land Record</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+      <div class="modal-body">
+        <div class="row g-3">
+          <div class="col-6"><label class="form-label">Survey Number</label><input type="text" name="survey_number" class="form-control" required></div>
+          <div class="col-3"><label class="form-label">Area</label><input type="number" step="0.01" name="land_area" class="form-control" required></div>
+          <div class="col-3"><label class="form-label">Unit</label>
+            <select name="area_unit" class="form-select" required><option value="acre">Acre</option><option value="hectare">Hectare</option><option value="guntha">Guntha</option></select>
+          </div>
+          <div class="col-6"><label class="form-label">Village</label><input type="text" name="village" class="form-control" required></div>
+          <div class="col-6"><label class="form-label">Taluk</label><input type="text" name="taluk" class="form-control" required></div>
+          <div class="col-6"><label class="form-label">District</label><input type="text" name="district" class="form-control" required></div>
+          <div class="col-6"><label class="form-label">State</label><input type="text" name="state" class="form-control" required></div>
+          <div class="col-6"><label class="form-label">Land Type</label><input type="text" name="land_type" class="form-control" placeholder="e.g. Agricultural" required></div>
+          <div class="col-6"><label class="form-label">Ownership Type</label><input type="text" name="ownership_type" class="form-control" placeholder="e.g. Owned" required></div>
+        </div>
+      </div>
+      <div class="modal-footer"><button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button><button type="submit" class="btn btn-accent">Save Record</button></div>
+    </form>
+  </div>
+</div>
+
+<!-- Add benefit modal -->
+<div class="modal fade" id="addBenefitModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <form method="POST" action="{{ url_for('government_manage_benefits', farmer_id=farmer.farmer_id) }}" class="modal-content">
+      <input type="hidden" name="action" value="create">
+      <div class="modal-header"><h5 class="modal-title">Add Benefit</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+      <div class="modal-body">
+        <div class="mb-3"><label class="form-label">Scheme (optional)</label><input type="text" name="scheme_id" class="form-control" placeholder="Scheme ID, if linked"></div>
+        <div class="mb-3"><label class="form-label">Benefit Name</label><input type="text" name="benefit_name" class="form-control" required></div>
+        <div class="mb-3"><label class="form-label">Description</label><textarea name="description" class="form-control" rows="2"></textarea></div>
+        <div class="mb-1"><label class="form-label">Amount (₹)</label><input type="number" step="0.01" name="amount" class="form-control" required></div>
+      </div>
+      <div class="modal-footer"><button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button><button type="submit" class="btn btn-accent">Add Benefit</button></div>
+    </form>
+  </div>
+</div>
+
+<!-- Verification processing overlay -->
+<div class="d-none" id="verifyOverlay" style="position:fixed;inset:0;background:rgba(5,20,35,0.82);z-index:2000;display:flex;align-items:center;justify-content:center;">
+  <div class="surface p-4" style="max-width:420px;width:92%;background:#fff;">
+    <div class="text-center mb-3">
+      <div class="spinner-border text-primary mb-2" role="status"></div>
+      <h3 class="h6 mb-0">Verifying identity…</h3>
+    </div>
+    <div class="trust-chain">
+      <div class="chain-node"><div class="chain-marker"><div class="chain-dot"><i class="bi bi-link-45deg"></i></div><div class="chain-line"></div></div><div class="chain-content"><div class="chain-title" style="font-size:0.85rem;">Blockchain Lookup</div></div></div>
+      <div class="chain-node"><div class="chain-marker"><div class="chain-dot"><i class="bi bi-hdd-network-fill"></i></div><div class="chain-line"></div></div><div class="chain-content"><div class="chain-title" style="font-size:0.85rem;">IPFS Download</div></div></div>
+      <div class="chain-node"><div class="chain-marker"><div class="chain-dot"><i class="bi bi-hash"></i></div><div class="chain-line"></div></div><div class="chain-content"><div class="chain-title" style="font-size:0.85rem;">SHA3 Verification</div></div></div>
+      <div class="chain-node"><div class="chain-marker"><div class="chain-dot"><i class="bi bi-pen-fill"></i></div><div class="chain-line"></div></div><div class="chain-content"><div class="chain-title" style="font-size:0.85rem;">ML-DSA Verification</div></div></div>
+      <div class="chain-node"><div class="chain-marker"><div class="chain-dot"><i class="bi bi-key-fill"></i></div><div class="chain-line"></div></div><div class="chain-content"><div class="chain-title" style="font-size:0.85rem;">ML-KEM Decapsulation</div></div></div>
+      <div class="chain-node"><div class="chain-marker"><div class="chain-dot"><i class="bi bi-shield-lock-fill"></i></div><div class="chain-line"></div></div><div class="chain-content"><div class="chain-title" style="font-size:0.85rem;">AES-256-GCM Decryption</div></div></div>
+      <div class="chain-node"><div class="chain-marker"><div class="chain-dot"><i class="bi bi-fingerprint"></i></div></div><div class="chain-content"><div class="chain-title" style="font-size:0.85rem;">SourceAFIS Matching</div></div></div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block page_js %}
+<script src="{{ url_for('static', filename='js/verification.js') }}"></script>
+{% endblock %}

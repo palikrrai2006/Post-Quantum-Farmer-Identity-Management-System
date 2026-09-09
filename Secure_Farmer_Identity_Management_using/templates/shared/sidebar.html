@@ -1,0 +1,53 @@
+{# shared/sidebar.html — reads session.role directly, no backend change needed.
+   Matched by substring (case-insensitive) rather than exact equality so this
+   keeps working regardless of the precise ROLE_* constant strings defined
+   in config.py (e.g. "farmer", "FARMER", "ROLE_FARMER" all match). #}
+{% set role = (session.role or '')|lower %}
+<div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+<aside class="app-sidebar" id="appSidebar">
+
+  {% if 'farmer' in role %}
+    <div class="side-heading">Farmer Portal</div>
+    <a class="nav-link {{ 'active' if request.path == url_for('farmer_dashboard') }}" href="{{ url_for('farmer_dashboard') }}"><i class="bi bi-grid-1x2-fill"></i>Dashboard</a>
+    <a class="nav-link {{ 'active' if request.path == url_for('farmer_profile') }}" href="{{ url_for('farmer_profile') }}"><i class="bi bi-person-badge"></i>My Profile</a>
+    <a class="nav-link {{ 'active' if request.path == url_for('farmer_fingerprints') }}" href="{{ url_for('farmer_fingerprints') }}"><i class="bi bi-fingerprint"></i>Fingerprints</a>
+    <a class="nav-link {{ 'active' if request.path == url_for('farmer_land') }}" href="{{ url_for('farmer_land') }}"><i class="bi bi-geo-alt-fill"></i>Land Records</a>
+    <a class="nav-link {{ 'active' if request.path == url_for('farmer_benefits') }}" href="{{ url_for('farmer_benefits') }}"><i class="bi bi-cash-coin"></i>Benefits</a>
+    <a class="nav-link {{ 'active' if request.path == url_for('farmer_schemes') }}" href="{{ url_for('farmer_schemes') }}"><i class="bi bi-award-fill"></i>Government Schemes</a>
+    <div class="sidebar-divider"></div>
+    <a class="nav-link logout-link" href="{{ url_for('logout') }}"><i class="bi bi-box-arrow-right"></i>Logout</a>
+
+  {% elif 'registration' in role or 'center' in role %}
+    <div class="side-heading">Registration Center</div>
+    <a class="nav-link {{ 'active' if request.path == url_for('center_dashboard') }}" href="{{ url_for('center_dashboard') }}"><i class="bi bi-grid-1x2-fill"></i>Dashboard</a>
+    <a class="nav-link {{ 'active' if request.path == url_for('center_register') }}" href="{{ url_for('center_register') }}"><i class="bi bi-person-plus-fill"></i>Register Farmer</a>
+    <div class="side-heading">Records</div>
+    <a class="nav-link" href="{{ url_for('center_dashboard') }}"><i class="bi bi-clock-history"></i>Enrollment History</a>
+    <a class="nav-link" href="{{ url_for('center_dashboard') }}"><i class="bi bi-person-vcard"></i>Operator Profile</a>
+    <div class="sidebar-divider"></div>
+    <a class="nav-link logout-link" href="{{ url_for('logout') }}"><i class="bi bi-box-arrow-right"></i>Logout</a>
+
+  {% elif 'government' in role or 'officer' in role %}
+    <div class="side-heading">Government Portal</div>
+    <a class="nav-link {{ 'active' if request.path == url_for('government_dashboard') }}" href="{{ url_for('government_dashboard') }}"><i class="bi bi-grid-1x2-fill"></i>Dashboard</a>
+    <a class="nav-link {{ 'active' if request.path == url_for('government_farmer_search') }}" href="{{ url_for('government_farmer_search') }}"><i class="bi bi-search"></i>Search Farmer</a>
+    <a class="nav-link {{ 'active' if request.path == url_for('government_schemes_view') }}" href="{{ url_for('government_schemes_view') }}"><i class="bi bi-award-fill"></i>Government Schemes</a>
+    <div class="side-heading">Records</div>
+    <a class="nav-link {{ 'active' if request.path == url_for('government_farmer_search') }}" href="{{ url_for('government_farmer_search') }}"><i class="bi bi-geo-alt-fill"></i>Land Records</a>
+    <a class="nav-link {{ 'active' if request.path == url_for('government_farmer_search') }}" href="{{ url_for('government_farmer_search') }}"><i class="bi bi-cash-coin"></i>Benefits</a>
+    <a class="nav-link {{ 'active' if request.path == url_for('government_reports') }}" href="{{ url_for('government_reports') }}"><i class="bi bi-bar-chart-fill"></i>Reports</a>
+    <div class="side-heading">Administration</div>
+    <a class="nav-link {{ 'active' if request.path == url_for('government_centers') }}" href="{{ url_for('government_centers') }}"><i class="bi bi-building"></i>Centers &amp; Operators</a>
+    <a class="nav-link {{ 'active' if request.path == url_for('government_audit_logs') }}" href="{{ url_for('government_audit_logs') }}"><i class="bi bi-journal-text"></i>Audit Logs</a>
+    <a class="nav-link {{ 'active' if request.path == url_for('government_blockchain_status') }}" href="{{ url_for('government_blockchain_status') }}"><i class="bi bi-hdd-network-fill"></i>Blockchain Status</a>
+    <div class="sidebar-divider"></div>
+    <a class="nav-link logout-link" href="{{ url_for('logout') }}"><i class="bi bi-box-arrow-right"></i>Logout</a>
+
+  {% elif 'admin' in role %}
+    <div class="side-heading">Admin Console</div>
+    <a class="nav-link {{ 'active' if request.path == url_for('admin_dashboard') }}" href="{{ url_for('admin_dashboard') }}"><i class="bi bi-grid-1x2-fill"></i>Audit Dashboard</a>
+    <div class="sidebar-divider"></div>
+    <a class="nav-link logout-link" href="{{ url_for('logout') }}"><i class="bi bi-box-arrow-right"></i>Logout</a>
+  {% endif %}
+
+</aside>

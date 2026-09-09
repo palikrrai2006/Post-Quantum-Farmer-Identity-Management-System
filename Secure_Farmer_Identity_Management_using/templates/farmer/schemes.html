@@ -1,0 +1,41 @@
+{% extends "shared/dashboard_layout.html" %}
+{% block title %}Government Schemes{% endblock %}
+{% block body_class %}portal-farmer{% endblock %}
+{% block breadcrumbs %}
+<div class="breadcrumb-bar"><a href="{{ url_for('farmer_dashboard') }}">Dashboard</a><span class="sep">/</span>Government Schemes</div>
+{% endblock %}
+{% block page_title %}Active Government Schemes{% endblock %}
+{% block page_subtitle %}Schemes currently open for enrolled and verified farmers.{% endblock %}
+
+{% block content %}
+{% if schemes and schemes|length > 0 %}
+<div class="row g-4 stagger">
+  {% for scheme in schemes %}
+  <div class="col-md-6 col-lg-4">
+    <div class="surface h-100">
+      <div class="surface-body">
+        <div class="d-flex justify-content-between align-items-start mb-2">
+          <div class="stat-icon" style="background:var(--gov-green-100);color:var(--gov-green-700);"><i class="bi bi-award-fill"></i></div>
+          <span class="badge-status badge-success">Active</span>
+        </div>
+        <h3 class="h6 mt-2">{{ scheme.scheme_name }}</h3>
+        <p class="text-muted-2" style="font-size:0.85rem;">{{ scheme.description }}</p>
+        {% if scheme.eligibility %}
+        <div class="form-hint"><i class="bi bi-check2-circle me-1"></i>Eligibility: {{ scheme.eligibility }}</div>
+        {% endif %}
+        {% if scheme.start_date or scheme.end_date %}
+        <div class="form-hint mt-1"><i class="bi bi-calendar-event me-1"></i>{{ scheme.start_date or '—' }} to {{ scheme.end_date or 'ongoing' }}</div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div class="surface"><div class="empty-state">
+  <i class="bi bi-award"></i>
+  <div class="fw-semibold mb-1">No active schemes right now</div>
+  <div style="font-size:0.85rem;">Check back later for newly announced government schemes.</div>
+</div></div>
+{% endif %}
+{% endblock %}

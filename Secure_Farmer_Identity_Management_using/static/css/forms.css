@@ -1,0 +1,38 @@
+/* ===================================================================
+   Forms
+   =================================================================== */
+.form-label { font-weight: 600; font-size: 0.85rem; color: var(--ink-soft); margin-bottom: 6px; }
+.form-control, .form-select {
+  border-radius: 10px; border: 1.5px solid var(--line); padding: 0.62rem 0.9rem; font-size: 0.92rem;
+  background: #fff;
+}
+.form-control:focus, .form-select:focus {
+  border-color: var(--accent, var(--gov-blue-600));
+  box-shadow: 0 0 0 3px rgba(11,79,140,0.12);
+}
+.input-group-text { border-radius: 10px 0 0 10px; background: var(--card-alt); border: 1.5px solid var(--line); border-right: none; color: var(--muted); }
+.form-section-title { font-family: var(--font-display); font-weight: 600; font-size: 0.95rem; margin: 24px 0 14px; padding-bottom: 8px; border-bottom: 1px solid var(--line); }
+.form-section-title:first-child { margin-top: 0; }
+.form-hint { font-size: 0.78rem; color: var(--muted); margin-top: 4px; }
+.form-check-input:checked { background-color: var(--accent, var(--gov-blue-700)); border-color: var(--accent, var(--gov-blue-700)); }
+
+/* Auth / login card */
+.auth-page {
+  min-height: 100vh;
+  background: radial-gradient(circle at 15% 15%, rgba(255,255,255,0.06), transparent 40%), linear-gradient(135deg, var(--auth-c1, var(--gov-blue-900)) 0%, var(--auth-c2, var(--gov-blue-700)) 100%);
+  display: flex; align-items: center; justify-content: center; padding: 32px 16px;
+}
+.auth-card {
+  background: #fff; border-radius: var(--radius-lg); box-shadow: var(--shadow-lg);
+  width: 100%; max-width: 430px; padding: 40px 36px 32px; text-align: center;
+}
+.auth-card .portal-badge {
+  width: 64px; height: 64px; border-radius: 18px;
+  background: var(--auth-c2, var(--gov-blue-700));
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 1.7rem; margin: 0 auto 16px;
+  box-shadow: var(--shadow);
+}
+.auth-card .form-control { text-align: left; }
+.auth-card .auth-footer-links { font-size: 0.82rem; margin-top: 18px; }
+.auth-card .back-home { font-size: 0.83rem; color: var(--muted); }

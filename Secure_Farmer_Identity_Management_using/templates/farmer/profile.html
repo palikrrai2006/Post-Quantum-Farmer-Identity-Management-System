@@ -1,0 +1,87 @@
+{% extends "shared/dashboard_layout.html" %}
+{% block title %}My Profile{% endblock %}
+{% block body_class %}portal-farmer{% endblock %}
+{% block breadcrumbs %}
+<div class="breadcrumb-bar"><a href="{{ url_for('farmer_dashboard') }}">Dashboard</a><span class="sep">/</span>My Profile</div>
+{% endblock %}
+{% block page_title %}My Profile{% endblock %}
+{% block page_subtitle %}Personal details on record with the Registration Center.{% endblock %}
+
+{% block content %}
+<div class="row g-4">
+  <div class="col-lg-4">
+    <div class="surface text-center p-4">
+      <div class="avatar-ring mx-auto mb-3" style="background:var(--gov-green-100);color:var(--gov-green-700);border-color:var(--gov-green-500);">
+        {{ (farmer.name[0] if farmer and farmer.name else 'F')|upper }}
+      </div>
+      <h3 class="h5 mb-1">{{ farmer.name if farmer and farmer.name else '—' }}</h3>
+      <div class="id-pill text-mono" style="background:var(--gov-blue-50);color:var(--gov-blue-700);">{{ farmer.farmer_id if farmer and farmer.farmer_id else session.farmer_id }}</div>
+      <div class="mt-3"><span class="badge-status badge-success"><i class="bi bi-patch-check-fill me-1"></i>Verified Identity</span></div>
+    </div>
+  </div>
+  <div class="col-lg-8">
+    <div class="surface">
+      <div class="surface-header"><h3><i class="bi bi-person-lines-fill me-2 text-success"></i>Personal Details</h3></div>
+      <div class="surface-body">
+        <div class="row g-4">
+          <div class="col-sm-6">
+            <div class="metric-tile h-100">
+              <div class="metric-label">Full Name</div>
+              <div class="metric-value" style="font-family:inherit;">{{ farmer.name if farmer and farmer.name else '—' }}</div>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="metric-tile h-100">
+              <div class="metric-label">Date of Birth</div>
+              <div class="metric-value" style="font-family:inherit;">{{ farmer.date_of_birth if farmer and farmer.date_of_birth else '—' }}</div>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="metric-tile h-100">
+              <div class="metric-label">Gender</div>
+              <div class="metric-value" style="font-family:inherit;">{{ farmer.gender if farmer and farmer.gender else '—' }}</div>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="metric-tile h-100">
+              <div class="metric-label">Phone</div>
+              <div class="metric-value" style="font-family:inherit;">{{ farmer.phone if farmer and farmer.phone else '—' }}</div>
+            </div>
+          </div>
+          <div class="col-12">
+            <div class="metric-tile h-100">
+              <div class="metric-label">Address</div>
+              <div class="metric-value" style="font-family:inherit;">{{ farmer.address if farmer and farmer.address else '—' }}</div>
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <div class="metric-tile h-100">
+              <div class="metric-label">Village</div>
+              <div class="metric-value" style="font-family:inherit;">{{ farmer.village if farmer and farmer.village else '—' }}</div>
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <div class="metric-tile h-100">
+              <div class="metric-label">Taluk</div>
+              <div class="metric-value" style="font-family:inherit;">{{ farmer.taluk if farmer and farmer.taluk else '—' }}</div>
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <div class="metric-tile h-100">
+              <div class="metric-label">District</div>
+              <div class="metric-value" style="font-family:inherit;">{{ farmer.district if farmer and farmer.district else '—' }}</div>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="metric-tile h-100">
+              <div class="metric-label">State</div>
+              <div class="metric-value" style="font-family:inherit;">{{ farmer.state if farmer and farmer.state else '—' }}</div>
+            </div>
+          </div>
+        </div>
+        <div class="form-hint mt-3"><i class="bi bi-info-circle me-1"></i>To correct any detail above, please contact your Registration Center — profile edits are performed there.</div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,47 @@
+{% extends "shared/dashboard_layout.html" %}
+{% block title %}Benefits{% endblock %}
+{% block body_class %}portal-farmer{% endblock %}
+{% block breadcrumbs %}
+<div class="breadcrumb-bar"><a href="{{ url_for('farmer_dashboard') }}">Dashboard</a><span class="sep">/</span>Benefits</div>
+{% endblock %}
+{% block page_title %}Benefits{% endblock %}
+{% block page_subtitle %}Government benefits credited or pending against your identity.{% endblock %}
+
+{% block content %}
+<div class="surface">
+  <div class="surface-header"><h3><i class="bi bi-cash-coin me-2 text-success"></i>Benefit History</h3><span class="badge-status badge-info">{{ benefits|length }} Total</span></div>
+  {% if benefits and benefits|length > 0 %}
+  <div class="table-responsive">
+    <table class="table table-modern mb-0">
+      <thead>
+        <tr><th>Benefit</th><th>Description</th><th>Amount (₹)</th><th>Status</th><th>Payment Ref.</th></tr>
+      </thead>
+      <tbody>
+        {% for benefit in benefits %}
+        <tr>
+          <td class="fw-semibold">{{ benefit.benefit_name }}</td>
+          <td class="text-muted-2" style="max-width:260px;">{{ benefit.description }}</td>
+          <td class="text-mono">{{ '%.2f'|format(benefit.amount) if benefit.amount is not none else '—' }}</td>
+          <td>
+            {% set status = (benefit.status or '')|upper %}
+            {% if status == 'PAID' %}<span class="badge-status badge-success">Paid</span>
+            {% elif status == 'APPROVED' %}<span class="badge-status badge-info">Approved</span>
+            {% elif status == 'REJECTED' %}<span class="badge-status badge-danger">Rejected</span>
+            {% elif status == 'PENDING' %}<span class="badge-status badge-warning">Pending</span>
+            {% else %}<span class="badge-status badge-neutral">{{ benefit.status or 'Pending' }}</span>{% endif %}
+          </td>
+          <td class="text-mono" style="font-size:0.78rem;">{{ benefit.payment_reference or '—' }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div class="empty-state">
+    <i class="bi bi-cash-coin"></i>
+    <div class="fw-semibold mb-1">No benefits recorded yet</div>
+    <div style="font-size:0.85rem;">Benefits approved by a Government Officer will appear here.</div>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

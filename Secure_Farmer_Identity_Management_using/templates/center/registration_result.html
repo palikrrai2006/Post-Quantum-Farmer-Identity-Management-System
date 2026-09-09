@@ -1,0 +1,58 @@
+{% extends "shared/dashboard_layout.html" %}
+{% block title %}Registration Summary{% endblock %}
+{% block body_class %}portal-center{% endblock %}
+{% block breadcrumbs %}
+<div class="breadcrumb-bar"><a href="{{ url_for('center_dashboard') }}">Dashboard</a><span class="sep">/</span>Registration Summary</div>
+{% endblock %}
+{% block page_title %}Registration Summary{% endblock %}
+{% block page_subtitle %}Identity record created and secured for this farmer.{% endblock %}
+{% block page_actions %}
+<a href="{{ url_for('center_register') }}" class="btn btn-accent"><i class="bi bi-person-plus-fill me-1"></i>Register Another Farmer</a>
+{% endblock %}
+
+{% block content %}
+<div class="result-banner match mb-4 fade-in-up">
+  <div class="result-icon"><i class="bi bi-patch-check-fill"></i></div>
+  <div>
+    <h2 class="h5 mb-1">Farmer Registered Successfully</h2>
+    <div class="text-muted-2">A secure, cryptographically signed identity has been issued for this farmer.</div>
+  </div>
+</div>
+
+<div class="row g-4">
+  <div class="col-lg-6">
+    <div class="surface h-100">
+      <div class="surface-header"><h3><i class="bi bi-person-vcard-fill me-2 text-primary"></i>Farmer Details</h3></div>
+      <div class="surface-body">
+        <div class="row g-3">
+          <div class="col-6"><div class="metric-tile"><div class="metric-label">Farmer ID</div><div class="metric-value">{{ farmer.farmer_id }}</div></div></div>
+          <div class="col-6"><div class="metric-tile"><div class="metric-label">Name</div><div class="metric-value" style="font-family:inherit;">{{ farmer.name }}</div></div></div>
+          <div class="col-6"><div class="metric-tile"><div class="metric-label">Phone</div><div class="metric-value" style="font-family:inherit;">{{ farmer.phone }}</div></div></div>
+          <div class="col-6"><div class="metric-tile"><div class="metric-label">Village</div><div class="metric-value" style="font-family:inherit;">{{ farmer.village }}</div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-6">
+    <div class="surface h-100">
+      <div class="surface-header"><h3><i class="bi bi-fingerprint me-2 text-primary"></i>Enrolled Fingerprints</h3><span class="badge-status badge-info">{{ fingers|length }}</span></div>
+      <div class="surface-body">
+        {% if fingers and fingers|length > 0 %}
+        <div class="finger-grid">
+          {% for finger in fingers %}
+          <div class="finger-slot enrolled">
+            <i class="bi bi-check-circle-fill"></i>
+            <div class="finger-name">{{ finger.finger_position|replace('_',' ')|title }}</div>
+          </div>
+          {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state"><i class="bi bi-fingerprint"></i><div class="fw-semibold">No fingerprints enrolled yet</div></div>
+        {% endif %}
+        <a href="{{ url_for('center_enroll', farmer_id=farmer.farmer_id) }}" class="btn btn-outline-secondary w-100 mt-3"><i class="bi bi-plus-circle me-1"></i>Enroll More Fingers</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

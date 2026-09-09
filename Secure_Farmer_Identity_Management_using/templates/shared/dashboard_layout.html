@@ -1,0 +1,29 @@
+{% extends "shared/base.html" %}
+{% block body %}
+{% include "shared/navbar.html" %}
+
+<div class="app-shell">
+  {% include "shared/sidebar.html" %}
+
+  <main class="app-main">
+    {% block breadcrumbs %}{% endblock %}
+
+    <div class="page-header d-flex align-items-start justify-content-between flex-wrap gap-3">
+      <div>
+        <h1>{% block page_title %}Dashboard{% endblock %}</h1>
+        <p class="lead-muted mb-0">{% block page_subtitle %}{% endblock %}</p>
+      </div>
+      <div>{% block page_actions %}{% endblock %}</div>
+    </div>
+
+    {% include "shared/messages.html" %}
+
+    {% block content %}{% endblock %}
+  </main>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+{% block page_js %}{% endblock %}
+{% endblock %}

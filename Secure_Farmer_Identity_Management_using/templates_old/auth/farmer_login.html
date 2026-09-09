@@ -1,0 +1,88 @@
+{% extends "shared/base.html" %}
+
+{% block title %}Farmer Portal Login{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid bg-light min-vh-100 d-flex align-items-center">
+
+    <div class="row w-100 justify-content-center">
+
+        <div class="col-lg-5 col-md-7">
+
+            <div class="card shadow-lg border-0">
+
+                <div class="card-header bg-success text-white text-center py-4">
+
+                    <h2>
+                        <i class="bi bi-person-circle"></i>
+                        Farmer Portal
+                    </h2>
+
+                    <p class="mb-0">
+                        Secure Farmer Login
+                    </p>
+
+                </div>
+
+                <div class="card-body p-5">
+
+                    {% include "shared/messages.html" %}
+
+                    <form method="POST">
+
+                        <div class="mb-4">
+
+                            <label class="form-label">
+                                Username
+                            </label>
+
+                            <input
+                                type="text"
+                                name="username"
+                                class="form-control"
+                                required>
+
+                        </div>
+
+                        <div class="mb-4">
+
+                            <label class="form-label">
+                                Password
+                            </label>
+
+                            <input
+                                type="password"
+                                name="password"
+                                class="form-control"
+                                required>
+
+                        </div>
+
+                        <button class="btn btn-success w-100 btn-lg">
+
+                            <i class="bi bi-box-arrow-in-right"></i>
+
+                            Login
+
+                        </button>
+
+                    </form>
+
+                </div>
+
+                <div class="card-footer text-center">
+
+                    Government Secure Farmer Identity Management System
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

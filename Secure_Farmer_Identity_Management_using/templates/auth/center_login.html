@@ -1,0 +1,46 @@
+{% extends "shared/base.html" %}
+{% block title %}Registration Center Login{% endblock %}
+{% block body_class %}portal-center{% endblock %}
+{% block body %}
+<div class="auth-page" style="--auth-c1: var(--gov-blue-900); --auth-c2: var(--gov-blue-700);">
+  <div class="auth-card fade-in-up">
+    <div class="portal-badge">🏢</div>
+    <div class="section-eyebrow">Government Digital Identity Initiative</div>
+    <h1 class="h4 mt-1 mb-1">Registration Center</h1>
+    <p class="text-muted-2 mb-4" style="font-size:0.88rem;">Sign in to register farmers and enroll fingerprints for blockchain identity issuance.</p>
+
+    {% include "shared/messages.html" %}
+
+    <form method="POST" action="{{ url_for('registration_portal_login') }}" class="text-start">
+      <div class="mb-3">
+        <label class="form-label" for="username">Operator Username</label>
+        <div class="input-group">
+          <span class="input-group-text"><i class="bi bi-person-badge-fill"></i></span>
+          <input type="text" class="form-control" id="username" name="username" placeholder="Enter operator username" required autofocus>
+        </div>
+      </div>
+      <div class="mb-2">
+        <label class="form-label" for="password">Password</label>
+        <div class="input-group">
+          <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
+          <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password" required>
+        </div>
+      </div>
+      <div class="d-flex justify-content-between align-items-center mb-4 mt-2">
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" id="remember" name="remember">
+          <label class="form-check-label" for="remember" style="font-size:0.83rem;">Remember me</label>
+        </div>
+        <a href="#" style="font-size:0.83rem;" title="Contact your system administrator to reset your password">Forgot password?</a>
+      </div>
+      <button type="submit" class="btn btn-lg w-100" style="background:var(--gov-blue-700);color:#fff;">
+        <i class="bi bi-box-arrow-in-right me-1"></i> Login to Registration Center
+      </button>
+    </form>
+
+    <div class="auth-footer-links">
+      <a href="{{ url_for('index') }}" class="back-home"><i class="bi bi-arrow-left me-1"></i>Back to Home</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

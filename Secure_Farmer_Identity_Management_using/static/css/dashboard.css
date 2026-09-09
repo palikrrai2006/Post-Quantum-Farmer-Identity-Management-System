@@ -1,0 +1,128 @@
+/* ===================================================================
+   Dashboard + Trust Chain (signature pipeline visual) styles
+   =================================================================== */
+
+.dash-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 18px; }
+
+.profile-banner {
+  background: linear-gradient(120deg, var(--accent-dark, var(--gov-blue-900)), var(--accent, var(--gov-blue-700)));
+  border-radius: var(--radius-lg);
+  color: #fff;
+  padding: 30px 28px;
+  position: relative;
+  overflow: hidden;
+}
+.profile-banner::after {
+  content: "";
+  position: absolute; right: -40px; top: -60px; width: 220px; height: 220px;
+  border-radius: 50%; background: rgba(255,255,255,0.06);
+}
+.avatar-ring {
+  width: 78px; height: 78px; border-radius: 50%;
+  background: rgba(255,255,255,0.14);
+  border: 2px solid rgba(255,255,255,0.4);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.8rem; font-weight: 700; font-family: var(--font-display);
+}
+.id-pill {
+  display: inline-block; font-family: var(--font-mono); font-size: 0.78rem;
+  background: rgba(255,255,255,0.14); padding: 4px 11px; border-radius: 999px; margin-top: 6px;
+}
+
+
+/* -------------------------------------------------------------
+   TRUST CHAIN — the recurring pipeline signature.
+   Used on: homepage explainer, enrollment stepper, verification flow.
+   A real ordered process, so numbering communicates true sequence.
+   ------------------------------------------------------------- */
+.trust-chain {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  counter-reset: chain;
+}
+.trust-chain .chain-node {
+  display: flex;
+  gap: 18px;
+  position: relative;
+  padding-bottom: 30px;
+}
+.trust-chain .chain-node:last-child { padding-bottom: 0; }
+.trust-chain .chain-node:last-child .chain-line { display: none; }
+
+.trust-chain .chain-marker { position: relative; flex-shrink: 0; display: flex; flex-direction: column; align-items: center; }
+.trust-chain .chain-dot {
+  width: 52px; height: 52px; border-radius: 50%;
+  background: var(--card);
+  border: 2px solid var(--gov-blue-100);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.3rem; color: var(--gov-blue-700);
+  box-shadow: var(--shadow-sm);
+  z-index: 2;
+  transition: border-color 0.3s ease, color 0.3s ease, background 0.3s ease;
+}
+.trust-chain .chain-line {
+  position: absolute; top: 52px; bottom: -30px; left: 50%;
+  width: 2px; transform: translateX(-50%);
+  background: repeating-linear-gradient(to bottom, var(--gov-blue-100) 0 6px, transparent 6px 12px);
+}
+.trust-chain .chain-node.done .chain-dot { background: var(--gov-green-600); border-color: var(--gov-green-600); color: #fff; }
+.trust-chain .chain-node.done .chain-line { background: repeating-linear-gradient(to bottom, var(--gov-green-500) 0 6px, transparent 6px 12px); }
+.trust-chain .chain-node.active .chain-dot {
+  background: var(--gov-gold-500); border-color: var(--gov-gold-500); color: #2b1c02;
+  animation: chainPulse 1.4s ease-in-out infinite;
+}
+.trust-chain .chain-content { padding-top: 6px; }
+.trust-chain .chain-title { font-family: var(--font-display); font-weight: 600; font-size: 0.98rem; margin-bottom: 2px; }
+.trust-chain .chain-desc { font-size: 0.83rem; color: var(--muted); }
+.trust-chain .chain-tag {
+  font-family: var(--font-mono); font-size: 0.7rem; color: var(--gov-blue-600);
+  background: var(--gov-blue-50); padding: 2px 8px; border-radius: 6px; display: inline-block; margin-top: 6px;
+}
+
+@keyframes chainPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(201,150,44,0.45); }
+  50% { box-shadow: 0 0 0 8px rgba(201,150,44,0); }
+}
+
+/* Horizontal variant (homepage, wide screens) */
+@media (min-width: 992px) {
+  .trust-chain.chain-horizontal {
+    flex-direction: row;
+    align-items: flex-start;
+    overflow-x: auto;
+    padding-bottom: 10px;
+  }
+  .trust-chain.chain-horizontal .chain-node { flex-direction: column; align-items: center; text-align: center; padding-bottom: 0; padding-right: 34px; min-width: 128px; }
+  .trust-chain.chain-horizontal .chain-line {
+    top: 26px; left: 52px; right: -34px; bottom: auto; width: auto; height: 2px; transform: none;
+    background: repeating-linear-gradient(to right, var(--gov-blue-100) 0 6px, transparent 6px 12px);
+  }
+  .trust-chain.chain-horizontal .chain-node.done .chain-line {
+    background: repeating-linear-gradient(to right, var(--gov-green-500) 0 6px, transparent 6px 12px);
+  }
+  .trust-chain.chain-horizontal .chain-content { padding-top: 12px; }
+}
+
+/* Verification result panel */
+.verify-drop {
+  border: 2px dashed var(--line);
+  border-radius: var(--radius);
+  padding: 40px 20px;
+  text-align: center;
+  background: var(--card-alt);
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+.verify-drop.dragging { border-color: var(--gov-gold-500); background: var(--gov-gold-100); }
+.verify-drop i { font-size: 2.4rem; color: var(--accent, var(--gov-blue-700)); margin-bottom: 10px; }
+
+.result-banner { border-radius: var(--radius); padding: 26px 28px; display: flex; align-items: center; gap: 20px; }
+.result-banner.match { background: var(--gov-green-100); border: 1px solid #bfe3c8; }
+.result-banner.no-match { background: var(--danger-100); border: 1px solid #f0c6c6; }
+.result-banner .result-icon { width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.7rem; flex-shrink: 0; }
+.result-banner.match .result-icon { background: var(--gov-green-600); color: #fff; }
+.result-banner.no-match .result-icon { background: var(--danger); color: #fff; }
+
+.metric-tile { background: var(--card-alt); border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 14px 16px; }
+.metric-tile .metric-label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); }
+.metric-tile .metric-value { font-family: var(--font-mono); font-size: 0.92rem; word-break: break-all; }

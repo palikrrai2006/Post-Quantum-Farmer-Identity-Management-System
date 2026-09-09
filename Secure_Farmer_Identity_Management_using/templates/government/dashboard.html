@@ -1,0 +1,71 @@
+{% extends "shared/dashboard_layout.html" %}
+{% block title %}Government Dashboard{% endblock %}
+{% block body_class %}portal-government{% endblock %}
+{% block page_title %}Government Dashboard{% endblock %}
+{% block page_subtitle %}Farmer verification, land administration and benefits at a glance.{% endblock %}
+{% block page_actions %}
+<a href="{{ url_for('government_farmer_search') }}" class="btn btn-accent"><i class="bi bi-search me-1"></i>Search Farmer</a>
+{% endblock %}
+
+{% block content %}
+<div class="dash-grid mb-4 stagger">
+  <div class="stat-card">
+    <div class="stat-icon"><i class="bi bi-people-fill"></i></div>
+    <div><div class="stat-value" data-count-to="{{ total_farmers }}">{{ total_farmers }}</div><div class="stat-label">Total Farmers</div></div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon" style="background:var(--gov-green-600);"><i class="bi bi-patch-check-fill"></i></div>
+    <div><div class="stat-value" data-count-to="{{ verified_farmers }}">{{ verified_farmers }}</div><div class="stat-label">Fully Enrolled</div></div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon" style="background:var(--gov-gold-500);"><i class="bi bi-shield-check"></i></div>
+    <div><div class="stat-value" data-count-to="{{ today_verifications }}">{{ today_verifications }}</div><div class="stat-label">Today's Verifications</div></div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon"><i class="bi bi-fingerprint"></i></div>
+    <div><div class="stat-value" data-count-to="{{ total_fingerprints }}">{{ total_fingerprints }}</div><div class="stat-label">Enrolled Fingerprints</div></div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon" style="background:var(--gov-green-600);"><i class="bi bi-award-fill"></i></div>
+    <div><div class="stat-value" data-count-to="{{ total_schemes }}">{{ total_schemes }}</div><div class="stat-label">Active Schemes</div></div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon" style="background:var(--gov-gold-500);"><i class="bi bi-building"></i></div>
+    <div><div class="stat-value" data-count-to="{{ total_centers }}">{{ total_centers }}</div><div class="stat-label">Registration Centers</div></div>
+  </div>
+</div>
+
+
+<div class="row g-4">
+  <div class="col-lg-8">
+    <div class="surface">
+      <div class="surface-header"><h3><i class="bi bi-lightning-charge-fill me-2 text-primary"></i>Quick Actions</h3></div>
+      <div class="surface-body">
+        <div class="row g-3">
+          <div class="col-md-4">
+            <a href="{{ url_for('government_farmer_search') }}" class="btn btn-accent w-100 py-3"><i class="bi bi-search d-block mb-2 fs-4"></i>Search &amp; Verify Farmer</a>
+          </div>
+          <div class="col-md-4">
+            <a href="{{ url_for('government_schemes_view') }}" class="btn btn-outline-secondary w-100 py-3"><i class="bi bi-award-fill d-block mb-2 fs-4"></i>Manage Schemes</a>
+          </div>
+          <div class="col-md-4">
+            <a href="{{ url_for('government_farmer_search') }}" class="btn btn-outline-secondary w-100 py-3"><i class="bi bi-geo-alt-fill d-block mb-2 fs-4"></i>Land Records</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-4">
+    <div class="surface h-100">
+      <div class="surface-header"><h3><i class="bi bi-shield-lock-fill me-2 text-primary"></i>Verification Pipeline</h3></div>
+      <div class="surface-body">
+        <div class="trust-chain">
+          <div class="chain-node done"><div class="chain-marker"><div class="chain-dot"><i class="bi bi-link-45deg"></i></div><div class="chain-line"></div></div><div class="chain-content"><div class="chain-title" style="font-size:0.85rem;">Blockchain Lookup</div></div></div>
+          <div class="chain-node done"><div class="chain-marker"><div class="chain-dot"><i class="bi bi-hdd-network-fill"></i></div><div class="chain-line"></div></div><div class="chain-content"><div class="chain-title" style="font-size:0.85rem;">IPFS Download</div></div></div>
+          <div class="chain-node done"><div class="chain-marker"><div class="chain-dot"><i class="bi bi-fingerprint"></i></div></div><div class="chain-content"><div class="chain-title" style="font-size:0.85rem;">SourceAFIS Match</div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

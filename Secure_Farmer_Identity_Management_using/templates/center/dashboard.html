@@ -1,0 +1,138 @@
+{% extends "shared/dashboard_layout.html" %}
+{# This template is rendered by both center_dashboard() and admin_dashboard().
+   admin_dashboard() is the only caller that passes `logs`, so use that
+   presence — rather than guessing the exact ROLE_* string — to switch views. #}
+{% block title %}{{ 'Audit Dashboard' if logs is defined else 'Registration Center Dashboard' }}{% endblock %}
+{% block body_class %}{{ '' if logs is defined else 'portal-center' }}{% endblock %}
+
+{% block page_title %}{{ 'Audit Log' if logs is defined else 'Registration Center Dashboard' }}{% endblock %}
+{% block page_subtitle %}
+{% if logs is defined %}System-wide activity across all portals.
+{% else %}Enroll farmers and manage today's fingerprint registrations.{% endif %}
+{% endblock %}
+{% block page_actions %}
+{% if logs is not defined %}
+<a href="{{ url_for('center_register') }}" class="btn btn-accent"><i class="bi bi-person-plus-fill me-1"></i>Register Farmer</a>
+{% endif %}
+{% endblock %}
+
+{% block content %}
+{% if logs is defined %}
+
+  <div class="surface">
+    <div class="surface-header"><h3><i class="bi bi-journal-text me-2"></i>Recent Audit Entries</h3><span class="badge-status badge-info">{{ logs|length if logs else 0 }} Records</span></div>
+    {% if logs and logs|length > 0 %}
+    <div class="table-responsive">
+      <table class="table table-modern mb-0">
+        <thead><tr><th>Timestamp</th><th>User</th><th>Role</th><th>Action</th><th>Target Farmer</th><th>IP Address</th><th>Result</th></tr></thead>
+        <tbody>
+          {% for log in logs %}
+          <tr>
+            <td class="text-mono" style="font-size:0.78rem;">{{ log.created_at or log.timestamp }}</td>
+            <td>{{ log.user_id }}</td>
+            <td><span class="badge-status badge-info">{{ (log.role or '')|replace('_',' ')|title }}</span></td>
+            <td class="fw-semibold">{{ log.action }}</td>
+            <td class="text-mono">{{ log.target_farmer_id or '—' }}</td>
+            <td class="text-mono" style="font-size:0.78rem;">{{ log.ip_address or '—' }}</td>
+            <td>
+              {% if log.result == 'FAILED' %}<span class="badge-status badge-danger">Failed</span>
+              {% else %}<span class="badge-status badge-success">Success</span>{% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="empty-state"><i class="bi bi-journal-text"></i><div class="fw-semibold">No audit entries yet</div></div>
+    {% endif %}
+  </div>
+
+{% else %}
+
+  <div class="dash-grid mb-4 stagger">
+    <div class="stat-card">
+      <div class="stat-icon"><i class="bi bi-calendar-check-fill"></i></div>
+      <div><div class="stat-value" data-count-to="{{ today_registrations|default(0) }}">{{ today_registrations|default(0) }}</div><div class="stat-label">Today's Registrations</div></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon" style="background:var(--gov-green-600);"><i class="bi bi-check-circle-fill"></i></div>
+      <div><div class="stat-value" data-count-to="{{ completed_registrations|default(0) }}">{{ completed_registrations|default(0) }}</div><div class="stat-label">Completed Enrollments</div></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon" style="background:var(--gov-gold-500);"><i class="bi bi-hourglass-split"></i></div>
+      <div><div class="stat-value" data-count-to="{{ pending_registrations|default(0) }}">{{ pending_registrations|default(0) }}</div><div class="stat-label">Incomplete Enrollments</div></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon"><i class="bi bi-people-fill"></i></div>
+      <div><div class="stat-value" data-count-to="{{ total_registered|default(0) }}">{{ total_registered|default(0) }}</div><div class="stat-label">Total Farmers Registered</div></div>
+    </div>
+  </div>
+  <!-- Stats wired from center_dashboard() route -->
+
+
+  <div class="surface mb-4">
+    <div class="surface-header"><h3><i class="bi bi-lightning-charge-fill me-2 text-primary"></i>Quick Actions</h3></div>
+    <div class="surface-body">
+      <div class="row g-3">
+        <div class="col-md-4">
+          <a href="{{ url_for('center_register') }}" class="btn btn-accent w-100 py-3"><i class="bi bi-person-plus-fill d-block mb-2 fs-4"></i>Register Farmer</a>
+        </div>
+        <div class="col-md-4">
+          <a href="{{ url_for('center_register') }}" class="btn btn-outline-secondary w-100 py-3"><i class="bi bi-fingerprint d-block mb-2 fs-4"></i>Capture Fingerprints</a>
+        </div>
+        <div class="col-md-4">
+          <a href="{{ url_for('center_dashboard') }}" class="btn btn-outline-secondary w-100 py-3"><i class="bi bi-clock-history d-block mb-2 fs-4"></i>Enrollment History</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="surface">
+    <div class="surface-header"><h3><i class="bi bi-list-check me-2 text-primary"></i>Enrollment History</h3></div>
+    {% if recent_farmers %}
+    <div class="table-responsive">
+      <table class="table table-modern mb-0">
+        <thead>
+          <tr>
+            <th>Farmer ID</th>
+            <th>Name</th>
+            <th>Phone</th>
+            <th>Status</th>
+            <th>Date Registered</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for f in recent_farmers %}
+          <tr>
+            <td class="text-mono">{{ f.farmer_id }}</td>
+            <td class="fw-semibold">{{ f.name }}</td>
+            <td>{{ f.phone }}</td>
+            <td>
+              {% if f.registration_status == 'COMPLETE' %}
+              <span class="badge-status badge-success">Complete</span>
+              {% else %}
+              <span class="badge-status badge-warning">Incomplete</span>
+              {% endif %}
+            </td>
+            <td>{{ f.created_at[:10] }}</td>
+            <td>
+              <a href="{{ url_for('center_registration_result', farmer_id=f.farmer_id) }}" class="btn btn-sm btn-outline-primary">View</a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="empty-state">
+      <i class="bi bi-clock-history"></i>
+      <div class="fw-semibold mb-1">No enrollment history to show here yet</div>
+      <div style="font-size:0.85rem;">Registrations you complete will appear in this list.</div>
+    </div>
+    {% endif %}
+  </div>
+
+{% endif %}
+{% endblock %}

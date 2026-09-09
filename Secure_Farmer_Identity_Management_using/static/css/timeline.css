@@ -1,0 +1,28 @@
+/* ===================================================================
+   Stepper (multi-step registration form)
+   =================================================================== */
+.stepper-bar {
+  display: flex; align-items: flex-start; overflow-x: auto; gap: 0; padding-bottom: 6px;
+}
+.stepper-bar .step-item { display: flex; flex-direction: column; align-items: center; flex: 1; min-width: 92px; position: relative; }
+.stepper-bar .step-item:not(:last-child)::after {
+  content: ""; position: absolute; top: 19px; left: calc(50% + 22px); right: calc(-50% + 22px); height: 2px;
+  background: var(--line);
+}
+.stepper-bar .step-item.completed:not(:last-child)::after { background: var(--gov-green-500); }
+.stepper-bar .step-circle {
+  width: 38px; height: 38px; border-radius: 50%; background: #fff; border: 2px solid var(--line);
+  display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.85rem; color: var(--muted);
+  z-index: 1;
+}
+.stepper-bar .step-item.active .step-circle { border-color: var(--accent, var(--gov-blue-700)); color: var(--accent, var(--gov-blue-700)); box-shadow: 0 0 0 5px var(--accent-100, var(--gov-blue-100)); }
+.stepper-bar .step-item.completed .step-circle { border-color: var(--gov-green-500); background: var(--gov-green-500); color: #fff; }
+.stepper-bar .step-label { font-size: 0.7rem; margin-top: 8px; text-align: center; color: var(--muted); font-weight: 600; max-width: 90px; }
+.stepper-bar .step-item.active .step-label { color: var(--ink); }
+
+.step-panel { display: none; }
+.step-panel.active { display: block; animation: fadeInUp 0.35s ease; }
+
+.mini-chain-status { font-size: 0.78rem; display: flex; align-items: center; gap: 8px; padding: 8px 0; color: var(--muted); }
+.mini-chain-status.done { color: var(--gov-green-700); }
+.mini-chain-status i { width: 18px; }

@@ -1,0 +1,153 @@
+{% extends "shared/dashboard_layout.html" %}
+{% block title %}Blockchain & IPFS Status{% endblock %}
+{% block body_class %}portal-government{% endblock %}
+{% block breadcrumbs %}
+<div class="breadcrumb-bar"><a href="{{ url_for('government_dashboard') }}">Dashboard</a><span class="sep">/</span>Blockchain Status</div>
+{% endblock %}
+{% block page_title %}<i class="bi bi-hdd-network-fill me-2"></i>Blockchain &amp; IPFS Status{% endblock %}
+{% block page_subtitle %}Live infrastructure status for the decentralized identity storage layer.{% endblock %}
+
+{% block content %}
+
+<div class="row g-4 mb-4">
+  <!-- Connection Status -->
+  <div class="col-lg-4">
+    <div class="surface h-100">
+      <div class="surface-header"><h3><i class="bi bi-wifi me-2 text-primary"></i>Network Status</h3></div>
+      <div class="surface-body">
+        {% if info.connected %}
+        <div class="d-flex align-items-center gap-3 mb-3">
+          <div class="stat-icon" style="width:48px;height:48px;font-size:1.2rem;background:var(--gov-green-600);"><i class="bi bi-check-lg"></i></div>
+          <div>
+            <div class="fw-bold" style="color:var(--gov-green-700);">Connected</div>
+            <div class="text-muted-2" style="font-size:0.8rem;">Ganache / Ethereum Node</div>
+          </div>
+        </div>
+        {% else %}
+        <div class="d-flex align-items-center gap-3 mb-3">
+          <div class="stat-icon" style="width:48px;height:48px;font-size:1.2rem;background:var(--warning);"><i class="bi bi-exclamation-triangle"></i></div>
+          <div>
+            <div class="fw-bold" style="color:var(--warning);">Node Offline</div>
+            <div class="text-muted-2" style="font-size:0.8rem;">Start Ganache to connect</div>
+          </div>
+        </div>
+        {% endif %}
+
+        <div class="divider-soft"></div>
+
+        <div class="metric-tile mb-2">
+          <div class="metric-label">RPC Endpoint</div>
+          <div class="metric-value" style="font-size:0.8rem;">{{ info.rpc_url }}</div>
+        </div>
+        <div class="metric-tile mb-2">
+          <div class="metric-label">Chain ID</div>
+          <div class="metric-value">{{ info.chain_id }}</div>
+        </div>
+        <div class="metric-tile">
+          <div class="metric-label">Latest Block</div>
+          <div class="metric-value">{{ info.block_number }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contract Details -->
+  <div class="col-lg-4">
+    <div class="surface h-100">
+      <div class="surface-header"><h3><i class="bi bi-file-earmark-code me-2 text-primary"></i>Smart Contract</h3></div>
+      <div class="surface-body">
+        <div class="metric-tile mb-2">
+          <div class="metric-label">Contract Address</div>
+          <div class="metric-value" style="font-size:0.72rem;word-break:break-all;">{{ info.contract_address }}</div>
+        </div>
+        <div class="metric-tile mb-2">
+          <div class="metric-label">Anchored Records</div>
+          <div class="metric-value" style="font-size:1.4rem;font-family:var(--font-display);font-weight:700;">{{ total_anchored }}</div>
+        </div>
+        <div class="metric-tile">
+          <div class="metric-label">Network</div>
+          <div class="metric-value">Ethereum (Ganache Dev Chain)</div>
+        </div>
+        <div class="mt-3">
+          <div class="d-flex align-items-center gap-2" style="font-size:0.8rem;color:var(--muted);">
+            <i class="bi bi-info-circle text-primary"></i>
+            Each fingerprint enrollment stores its IPFS CID and SHA3-256 hash on-chain via the FarmerIdentity smart contract.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- IPFS Details -->
+  <div class="col-lg-4">
+    <div class="surface h-100">
+      <div class="surface-header"><h3><i class="bi bi-diagram-3 me-2 text-primary"></i>IPFS Node</h3></div>
+      <div class="surface-body">
+        <div class="metric-tile mb-2">
+          <div class="metric-label">API Endpoint</div>
+          <div class="metric-value" style="font-size:0.8rem;">{{ info.ipfs_api }}</div>
+        </div>
+        <div class="metric-tile mb-2">
+          <div class="metric-label">Gateway URL</div>
+          <div class="metric-value" style="font-size:0.8rem;">{{ info.ipfs_gateway }}</div>
+        </div>
+        <div class="metric-tile">
+          <div class="metric-label">Storage Protocol</div>
+          <div class="metric-value">Kubo (go-ipfs) — content-addressed</div>
+        </div>
+        <div class="mt-3">
+          <div class="d-flex align-items-center gap-2" style="font-size:0.8rem;color:var(--muted);">
+            <i class="bi bi-info-circle text-primary"></i>
+            Encrypted fingerprint packages are stored in IPFS. The CID is immutable and is anchored to the blockchain.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Pipeline Diagram -->
+<div class="surface">
+  <div class="surface-header">
+    <h3><i class="bi bi-diagram-2-fill me-2 text-primary"></i>End-to-End Trust Architecture</h3>
+    <span class="badge-status badge-info">Read-only — Immutable</span>
+  </div>
+  <div class="surface-body">
+    <div class="trust-chain chain-horizontal" style="padding:10px 0;">
+      <div class="chain-node done">
+        <div class="chain-marker"><div class="chain-dot"><i class="bi bi-person-plus-fill"></i></div><div class="chain-line"></div></div>
+        <div class="chain-content"><div class="chain-title">Registration</div><div class="chain-desc">Farmer enrolled</div></div>
+      </div>
+      <div class="chain-node done">
+        <div class="chain-marker"><div class="chain-dot"><i class="bi bi-fingerprint"></i></div><div class="chain-line"></div></div>
+        <div class="chain-content"><div class="chain-title">SourceAFIS</div><div class="chain-desc">Template extracted</div></div>
+      </div>
+      <div class="chain-node done">
+        <div class="chain-marker"><div class="chain-dot"><i class="bi bi-shield-lock-fill"></i></div><div class="chain-line"></div></div>
+        <div class="chain-content"><div class="chain-title">AES-256-GCM</div><div class="chain-desc">Encrypted</div><span class="chain-tag">AES</span></div>
+      </div>
+      <div class="chain-node done">
+        <div class="chain-marker"><div class="chain-dot"><i class="bi bi-key-fill"></i></div><div class="chain-line"></div></div>
+        <div class="chain-content"><div class="chain-title">ML-KEM-1024</div><div class="chain-desc">Key encapsulated</div><span class="chain-tag">PQ-KEM</span></div>
+      </div>
+      <div class="chain-node done">
+        <div class="chain-marker"><div class="chain-dot"><i class="bi bi-pen-fill"></i></div><div class="chain-line"></div></div>
+        <div class="chain-content"><div class="chain-title">ML-DSA-87</div><div class="chain-desc">Signed</div><span class="chain-tag">PQ-DSA</span></div>
+      </div>
+      <div class="chain-node done">
+        <div class="chain-marker"><div class="chain-dot"><i class="bi bi-hash"></i></div><div class="chain-line"></div></div>
+        <div class="chain-content"><div class="chain-title">SHA3-256</div><div class="chain-desc">Integrity hash</div></div>
+      </div>
+      <div class="chain-node done">
+        <div class="chain-marker"><div class="chain-dot"><i class="bi bi-hdd-network-fill"></i></div><div class="chain-line"></div></div>
+        <div class="chain-content"><div class="chain-title">IPFS Upload</div><div class="chain-desc">CID generated</div></div>
+      </div>
+      <div class="chain-node done">
+        <div class="chain-marker"><div class="chain-dot"><i class="bi bi-link-45deg"></i></div></div>
+        <div class="chain-content"><div class="chain-title">Blockchain</div><div class="chain-desc">CID anchored on-chain</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

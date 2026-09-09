@@ -1,0 +1,49 @@
+{% extends "shared/dashboard_layout.html" %}
+{% block title %}Fingerprints{% endblock %}
+{% block body_class %}portal-farmer{% endblock %}
+{% block breadcrumbs %}
+<div class="breadcrumb-bar"><a href="{{ url_for('farmer_dashboard') }}">Dashboard</a><span class="sep">/</span>Fingerprints</div>
+{% endblock %}
+{% block page_title %}Fingerprints &amp; Enrollment Status{% endblock %}
+{% block page_subtitle %}{{ enrolled|length }} of {{ max_allowed }} fingers enrolled &middot; minimum required: {{ min_required }}{% endblock %}
+
+{% block content %}
+
+<div class="surface mb-4">
+  <div class="surface-body">
+    <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+      <div class="fw-semibold" style="font-size:0.92rem;"><i class="bi bi-fingerprint me-2 text-success"></i>Enrollment Progress</div>
+      {% if enrolled|length >= min_required %}
+        <span class="badge-status badge-success"><i class="bi bi-check-circle-fill me-1"></i>Minimum Requirement Met</span>
+      {% else %}
+        <span class="badge-status badge-warning"><i class="bi bi-exclamation-triangle-fill me-1"></i>Below Minimum — Visit a Registration Center</span>
+      {% endif %}
+    </div>
+    <div class="progress" style="height:10px;border-radius:99px;background:var(--card-alt);">
+      {% set pct = ((enrolled|length) / max_allowed * 100) if max_allowed else 0 %}
+      <div class="progress-bar" role="progressbar" style="width:{{ pct }}%;background:var(--gov-green-600);border-radius:99px;" aria-valuenow="{{ pct }}" aria-valuemin="0" aria-valuemax="100"></div>
+    </div>
+  </div>
+</div>
+
+<div class="surface">
+  <div class="surface-header"><h3><i class="bi bi-grid-3x3-gap-fill me-2 text-success"></i>All Finger Positions</h3></div>
+  <div class="surface-body">
+    <div class="finger-grid">
+      {% for position in all_positions %}
+      <div class="finger-slot {{ 'enrolled' if position in enrolled else '' }}">
+        <i class="bi {{ 'bi-fingerprint' if position in enrolled else 'bi-slash-circle' }}"></i>
+        <div class="finger-name">{{ position|replace('_',' ')|title }}</div>
+        {% if position in enrolled %}
+          <div class="mt-1"><span class="badge-status badge-success" style="font-size:0.62rem;">Enrolled</span></div>
+        {% else %}
+          <div class="mt-1"><span class="badge-status badge-neutral" style="font-size:0.62rem;">Not Enrolled</span></div>
+        {% endif %}
+      </div>
+      {% endfor %}
+    </div>
+    <div class="form-hint mt-4"><i class="bi bi-info-circle me-1"></i>Fingerprint capture and enrollment can only be performed in person at a Certified Registration Center for security reasons.</div>
+  </div>
+</div>
+
+{% endblock %}

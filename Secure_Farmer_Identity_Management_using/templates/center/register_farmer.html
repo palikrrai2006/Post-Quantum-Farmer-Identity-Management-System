@@ -1,0 +1,103 @@
+{% extends "shared/dashboard_layout.html" %}
+{% block title %}Register Farmer{% endblock %}
+{% block body_class %}portal-center{% endblock %}
+{% block breadcrumbs %}
+<div class="breadcrumb-bar"><a href="{{ url_for('center_dashboard') }}">Dashboard</a><span class="sep">/</span>Register Farmer</div>
+{% endblock %}
+{% block page_title %}Register a New Farmer{% endblock %}
+{% block page_subtitle %}Step 1 of the enrollment pipeline — capture the farmer's core details.{% endblock %}
+
+{% block content %}
+<div class="row g-4">
+  <div class="col-lg-8">
+    <div class="surface">
+      <div class="surface-body">
+        <form method="POST" action="{{ url_for('center_register') }}">
+          <div class="form-section-title"><i class="bi bi-person-vcard me-2"></i>Identity Details</div>
+          <div class="row g-3">
+            <div class="col-md-8">
+              <label class="form-label" for="name">Full Name</label>
+              <input type="text" class="form-control" id="name" name="name" placeholder="As per government ID" required>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label" for="date_of_birth">Date of Birth</label>
+              <input type="date" class="form-control" id="date_of_birth" name="date_of_birth" required>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label" for="gender">Gender</label>
+              <select class="form-select" id="gender" name="gender" required>
+                <option value="" selected disabled>Select</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            <div class="col-md-8">
+              <label class="form-label" for="phone">Phone Number</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-telephone-fill"></i></span>
+                <input type="tel" class="form-control" id="phone" name="phone" placeholder="10-digit mobile number" required>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-section-title"><i class="bi bi-geo-alt me-2"></i>Address Details</div>
+          <div class="row g-3">
+            <div class="col-12">
+              <label class="form-label" for="address">Address</label>
+              <textarea class="form-control" id="address" name="address" rows="2" placeholder="House / street address" required></textarea>
+            </div>
+            <div class="col-md-3">
+              <label class="form-label" for="village">Village</label>
+              <input type="text" class="form-control" id="village" name="village" required>
+            </div>
+            <div class="col-md-3">
+              <label class="form-label" for="taluk">Taluk</label>
+              <input type="text" class="form-control" id="taluk" name="taluk" required>
+            </div>
+            <div class="col-md-3">
+              <label class="form-label" for="district">District</label>
+              <input type="text" class="form-control" id="district" name="district" required>
+            </div>
+            <div class="col-md-3">
+              <label class="form-label" for="state">State</label>
+              <input type="text" class="form-control" id="state" name="state" required>
+            </div>
+          </div>
+
+          <div class="d-flex justify-content-end gap-2 mt-4">
+            <a href="{{ url_for('center_dashboard') }}" class="btn btn-outline-secondary">Cancel</a>
+            <button type="submit" class="btn btn-accent"><i class="bi bi-arrow-right-circle me-1"></i>Save &amp; Continue to Fingerprint Enrollment</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-4">
+    <div class="surface">
+      <div class="surface-header"><h3><i class="bi bi-signpost-split-fill me-2 text-primary"></i>Registration Pipeline</h3></div>
+      <div class="surface-body">
+        <div class="trust-chain">
+          <div class="chain-node active">
+            <div class="chain-marker"><div class="chain-dot">1</div><div class="chain-line"></div></div>
+            <div class="chain-content"><div class="chain-title">Farmer Details</div><div class="chain-desc">You are here</div></div>
+          </div>
+          <div class="chain-node">
+            <div class="chain-marker"><div class="chain-dot">2</div><div class="chain-line"></div></div>
+            <div class="chain-content"><div class="chain-title">Fingerprint Capture</div><div class="chain-desc">SourceAFIS template</div></div>
+          </div>
+          <div class="chain-node">
+            <div class="chain-marker"><div class="chain-dot">3</div><div class="chain-line"></div></div>
+            <div class="chain-content"><div class="chain-title">Encrypt &amp; Sign</div><div class="chain-desc">AES-256-GCM &middot; ML-KEM &middot; ML-DSA</div></div>
+          </div>
+          <div class="chain-node">
+            <div class="chain-marker"><div class="chain-dot">4</div></div>
+            <div class="chain-content"><div class="chain-title">IPFS + Blockchain</div><div class="chain-desc">Identity anchored</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

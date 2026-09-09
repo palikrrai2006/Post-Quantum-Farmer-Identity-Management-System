@@ -1,0 +1,45 @@
+{% extends "shared/base.html" %}
+{% block title %}Admin Login{% endblock %}
+{% block body %}
+<div class="auth-page" style="--auth-c1: #1a1a2e; --auth-c2: #3a3a5c;">
+  <div class="auth-card fade-in-up">
+    <div class="portal-badge" style="background:#3a3a5c;">⚙️</div>
+    <div class="section-eyebrow">System Administration</div>
+    <h1 class="h4 mt-1 mb-1">Admin Console</h1>
+    <p class="text-muted-2 mb-4" style="font-size:0.88rem;">Restricted access — user, center and audit administration.</p>
+
+    {% include "shared/messages.html" %}
+
+    <form method="POST" action="{{ url_for('admin_portal_login') }}" class="text-start">
+      <div class="mb-3">
+        <label class="form-label" for="username">Admin Username</label>
+        <div class="input-group">
+          <span class="input-group-text"><i class="bi bi-shield-lock-fill"></i></span>
+          <input type="text" class="form-control" id="username" name="username" placeholder="Enter admin username" required autofocus>
+        </div>
+      </div>
+      <div class="mb-2">
+        <label class="form-label" for="password">Password</label>
+        <div class="input-group">
+          <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
+          <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password" required>
+        </div>
+      </div>
+      <div class="d-flex justify-content-between align-items-center mb-4 mt-2">
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" id="remember" name="remember">
+          <label class="form-check-label" for="remember" style="font-size:0.83rem;">Remember me</label>
+        </div>
+        <a href="#" style="font-size:0.83rem;" title="Contact the system owner to reset your password">Forgot password?</a>
+      </div>
+      <button type="submit" class="btn btn-lg w-100" style="background:#2c2c4e;color:#fff;">
+        <i class="bi bi-box-arrow-in-right me-1"></i> Login to Admin Console
+      </button>
+    </form>
+
+    <div class="auth-footer-links">
+      <a href="{{ url_for('index') }}" class="back-home"><i class="bi bi-arrow-left me-1"></i>Back to Home</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

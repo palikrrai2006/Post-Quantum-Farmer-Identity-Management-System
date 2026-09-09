@@ -1,0 +1,290 @@
+{% extends "shared/base.html" %}
+
+{% block title %}Register Farmer{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid py-4">
+
+    <!-- Header -->
+
+    <div class="card shadow border-0 mb-4">
+
+        <div class="card-header bg-success text-white">
+
+            <h2>
+                <i class="bi bi-person-plus-fill"></i>
+                Farmer Registration
+            </h2>
+
+            <p class="mb-0">
+                Certified Registration Center
+            </p>
+
+        </div>
+
+    </div>
+
+    {% include "shared/messages.html" %}
+
+    <form method="POST">
+
+        <div class="card shadow border-0">
+
+            <div class="card-body">
+
+                <div class="row">
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label">
+
+                            Full Name
+
+                        </label>
+
+                        <input
+                            type="text"
+                            class="form-control"
+                            name="name"
+                            required>
+
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label">
+
+                            Date of Birth
+
+                        </label>
+
+                        <input
+                            type="date"
+                            class="form-control"
+                            name="date_of_birth"
+                            required>
+
+                    </div>
+
+                </div>
+
+                <div class="row">
+
+                    <div class="col-md-4 mb-3">
+
+                        <label class="form-label">
+
+                            Gender
+
+                        </label>
+
+                        <select
+                            class="form-select"
+                            name="gender"
+                            required>
+
+                            <option value="">Select</option>
+
+                            <option>Male</option>
+
+                            <option>Female</option>
+
+                            <option>Other</option>
+
+                        </select>
+
+                    </div>
+
+                    <div class="col-md-4 mb-3">
+
+                        <label class="form-label">
+
+                            Mobile Number
+
+                        </label>
+
+                        <input
+                            type="text"
+                            class="form-control"
+                            name="phone"
+                            required>
+
+                    </div>
+
+                    <div class="col-md-4 mb-3">
+
+                        <label class="form-label">
+
+                            State
+
+                        </label>
+
+                        <input
+                            type="text"
+                            class="form-control"
+                            name="state"
+                            required>
+
+                    </div>
+
+                </div>
+
+                <div class="mb-3">
+
+                    <label class="form-label">
+
+                        Address
+
+                    </label>
+
+                    <textarea
+                        class="form-control"
+                        rows="3"
+                        name="address"
+                        required></textarea>
+
+                </div>
+
+                <div class="row">
+
+                    <div class="col-md-4 mb-3">
+
+                        <label class="form-label">
+
+                            Village
+
+                        </label>
+
+                        <input
+                            class="form-control"
+                            name="village"
+                            required>
+
+                    </div>
+
+                    <div class="col-md-4 mb-3">
+
+                        <label class="form-label">
+
+                            Taluk
+
+                        </label>
+
+                        <input
+                            class="form-control"
+                            name="taluk"
+                            required>
+
+                    </div>
+
+                    <div class="col-md-4 mb-3">
+
+                        <label class="form-label">
+
+                            District
+
+                        </label>
+
+                        <input
+                            class="form-control"
+                            name="district"
+                            required>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <br>
+
+        <div class="card shadow border-0">
+
+            <div class="card-header bg-primary text-white">
+
+                <h5>
+
+                    Registration Process
+
+                </h5>
+
+            </div>
+
+            <div class="card-body">
+
+                <div class="progress mb-4" style="height:30px;">
+
+                    <div
+                        class="progress-bar progress-bar-striped progress-bar-animated bg-success"
+                        style="width:12.5%;">
+
+                        Step 1 / 8
+
+                    </div>
+
+                </div>
+
+                <div class="row text-center">
+
+                    <div class="col">
+
+                        <i class="bi bi-person-plus-fill display-6 text-primary"></i>
+
+                        <p>Farmer Registration</p>
+
+                    </div>
+
+                    <div class="col">
+
+                        <i class="bi bi-fingerprint display-6 text-secondary"></i>
+
+                        <p>Fingerprint Enrollment</p>
+
+                    </div>
+
+                    <div class="col">
+
+                        <i class="bi bi-shield-lock display-6 text-success"></i>
+
+                        <p>Encryption</p>
+
+                    </div>
+
+                    <div class="col">
+
+                        <i class="bi bi-cloud-arrow-up display-6 text-warning"></i>
+
+                        <p>Blockchain & IPFS</p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <br>
+
+        <div class="text-end">
+
+            <button
+                type="submit"
+                class="btn btn-success btn-lg">
+
+                <i class="bi bi-arrow-right-circle-fill"></i>
+
+                Register Farmer
+
+            </button>
+
+        </div>
+
+    </form>
+
+</div>
+
+{% endblock %}

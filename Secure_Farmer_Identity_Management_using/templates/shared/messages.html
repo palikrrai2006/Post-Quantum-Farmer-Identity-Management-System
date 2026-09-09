@@ -1,0 +1,17 @@
+{# shared/messages.html — renders get_flashed_messages with (category, message) #}
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div class="mb-3">
+    {% for category, message in messages %}
+      {% set alert_class = {'error': 'danger', 'success': 'success', 'warning': 'warning'}.get(category, 'info') %}
+      <div class="alert alert-{{ alert_class }} d-flex align-items-center gap-2 auto-dismiss border-0 shadow-sm" role="alert" style="border-radius:12px;">
+        {% if alert_class == 'danger' %}<i class="bi bi-x-circle-fill"></i>
+        {% elif alert_class == 'success' %}<i class="bi bi-check-circle-fill"></i>
+        {% elif alert_class == 'warning' %}<i class="bi bi-exclamation-triangle-fill"></i>
+        {% else %}<i class="bi bi-info-circle-fill"></i>{% endif %}
+        <span>{{ message }}</span>
+      </div>
+    {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}

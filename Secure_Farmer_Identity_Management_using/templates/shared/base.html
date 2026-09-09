@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}KISAN-ID{% endblock %} · Secure Farmer Identity Management System</title>
+<meta name="description" content="Secure Farmer Identity Management System — Blockchain, IPFS and Post-Quantum Cryptography.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/forms.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/tables.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/timeline.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/animations.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/responsive.css') }}">
+{% block extra_css %}{% endblock %}
+</head>
+<body class="{% block body_class %}{% endblock %}">
+
+<div class="gov-strip">
+  <div class="container d-flex justify-content-between align-items-center flex-wrap gap-1">
+    <span><span class="emblem-dot"></span>Government Digital Identity Initiative &middot; Department of Agriculture &amp; Farmers Welfare</span>
+    <span class="d-none d-md-inline"><i class="bi bi-shield-lock-fill"></i> Secured with Post-Quantum Cryptography</span>
+  </div>
+</div>
+
+{% block body %}{% endblock %}
+
+<footer class="app-footer">
+  <div class="container">
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="d-flex align-items-center gap-2 mb-2">
+          <i class="bi bi-shield-check" style="font-size:1.4rem;color:var(--gov-gold-500);"></i>
+          <span class="footer-heading mb-0">KISAN-ID</span>
+        </div>
+        <p class="mb-0" style="max-width:320px;">Secure Farmer Identity Management System — issuing tamper-proof, cryptographically verifiable identities for every enrolled farmer.</p>
+      </div>
+      <div class="col-md-4">
+        <div class="footer-heading">Portals</div>
+        <div class="d-flex flex-column gap-1">
+          <a href="{{ url_for('farmer_portal_login') }}">Farmer Portal</a>
+          <a href="{{ url_for('registration_portal_login') }}">Registration Center</a>
+          <a href="{{ url_for('government_portal_login') }}">Government Portal</a>
+          <a href="{{ url_for('system_architecture') }}"><i class="bi bi-cpu me-1" style="color:var(--gov-gold-500);"></i>System Architecture (Showcase)</a>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="footer-heading">Security Architecture</div>
+        <div class="security-strip flex-column gap-2">
+          <span><i class="bi bi-fingerprint"></i>SourceAFIS Matching</span>
+          <span><i class="bi bi-lock-fill"></i>AES-256-GCM &middot; ML-KEM-1024 &middot; ML-DSA-87</span>
+          <span><i class="bi bi-diagram-3"></i>IPFS + Blockchain Anchoring</span>
+        </div>
+      </div>
+    </div>
+    <hr>
+    <div class="d-flex flex-wrap justify-content-between gap-2">
+      <span>&copy; {{ 2026 }} KISAN-ID &mdash; Final Year Project. All rights reserved.</span>
+      <span>Built with Blockchain &middot; IPFS &middot; Post-Quantum Cryptography</span>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="{{ url_for('static', filename='js/navigation.js') }}"></script>
+<script src="{{ url_for('static', filename='js/animations.js') }}"></script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

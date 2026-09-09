@@ -1,0 +1,20 @@
+/* ===================================================================
+   Responsive tuning
+   =================================================================== */
+@media (max-width: 767.98px) {
+  .app-navbar .brand-text .subtitle { display: none; }
+  .page-header h1 { font-size: 1.3rem; }
+  .auth-card { padding: 30px 22px 26px; }
+  .portal-card { padding: 26px 20px; }
+  .stepper-bar .step-label { display: none; }
+  .surface-body { padding: 16px; }
+}
+
+@media (max-width: 575.98px) {
+  .app-navbar .container, .app-navbar .container-fluid { padding-left: 12px; padding-right: 12px; }
+  .dash-grid { grid-template-columns: 1fr 1fr; }
+}
+
+@media (min-width: 992px) {
+  .hero-home { padding: 64px 0 30px; }
+}

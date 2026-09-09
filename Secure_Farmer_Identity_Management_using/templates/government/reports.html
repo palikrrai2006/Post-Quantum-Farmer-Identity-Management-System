@@ -1,0 +1,163 @@
+{% extends "shared/dashboard_layout.html" %}
+{% block title %}Reports{% endblock %}
+{% block body_class %}portal-government{% endblock %}
+{% block breadcrumbs %}
+<div class="breadcrumb-bar"><a href="{{ url_for('government_dashboard') }}">Dashboard</a><span class="sep">/</span>Reports</div>
+{% endblock %}
+{% block page_title %}<i class="bi bi-bar-chart-fill me-2"></i>System Reports{% endblock %}
+{% block page_subtitle %}Enrollment statistics, verification metrics, and scheme performance for the Department of Agriculture.{% endblock %}
+
+{% block extra_css %}
+<style>
+.report-stat { background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:22px 24px;text-align:center; }
+.report-stat .rs-value { font-family:var(--font-display);font-size:2rem;font-weight:800;color:var(--accent,var(--gov-blue-700));line-height:1; }
+.report-stat .rs-label { font-size:0.8rem;color:var(--muted);margin-top:4px;text-transform:uppercase;letter-spacing:0.05em;font-weight:600; }
+.chart-bar-wrap { display:flex;flex-direction:column;gap:10px; }
+.chart-bar-row { display:flex;align-items:center;gap:12px; }
+.chart-bar-label { font-size:0.78rem;color:var(--muted);width:65px;text-align:right;flex-shrink:0; }
+.chart-bar-track { flex:1;background:var(--gov-blue-50);border-radius:999px;height:24px;overflow:hidden; }
+.chart-bar-fill { height:100%;border-radius:999px;background:linear-gradient(90deg,var(--gov-blue-700),var(--gov-blue-500));transition:width 1s ease; }
+.chart-bar-count { font-size:0.78rem;font-weight:700;width:36px;color:var(--ink-soft); }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- Summary KPIs -->
+<div class="row g-3 mb-4 stagger">
+  <div class="col-6 col-md-4 col-lg-2">
+    <div class="report-stat">
+      <div class="rs-value">{{ total_farmers }}</div>
+      <div class="rs-label">Farmers Registered</div>
+    </div>
+  </div>
+  <div class="col-6 col-md-4 col-lg-2">
+    <div class="report-stat">
+      <div class="rs-value">{{ complete }}</div>
+      <div class="rs-label">Fully Enrolled</div>
+    </div>
+  </div>
+  <div class="col-6 col-md-4 col-lg-2">
+    <div class="report-stat">
+      <div class="rs-value">{{ total_fingerprints }}</div>
+      <div class="rs-label">Fingerprints Captured</div>
+    </div>
+  </div>
+  <div class="col-6 col-md-4 col-lg-2">
+    <div class="report-stat">
+      <div class="rs-value">{{ total_verifications }}</div>
+      <div class="rs-label">Verifications Run</div>
+    </div>
+  </div>
+  <div class="col-6 col-md-4 col-lg-2">
+    <div class="report-stat">
+      <div class="rs-value">{{ total_schemes }}</div>
+      <div class="rs-label">Active Schemes</div>
+    </div>
+  </div>
+  <div class="col-6 col-md-4 col-lg-2">
+    <div class="report-stat">
+      <div class="rs-value">{{ total_centers }}</div>
+      <div class="rs-label">Enrollment Centers</div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-4">
+
+  <!-- Monthly enrollment bar chart -->
+  <div class="col-lg-6">
+    <div class="surface h-100">
+      <div class="surface-header">
+        <h3><i class="bi bi-bar-chart-steps me-2 text-primary"></i>Monthly Farmer Enrollment</h3>
+        <span class="badge-status badge-info">Last 12 months</span>
+      </div>
+      <div class="surface-body">
+        {% if monthly_data %}
+        {% set max_count = monthly_data | map(attribute='cnt') | max %}
+        <div class="chart-bar-wrap">
+          {% for row in monthly_data %}
+          <div class="chart-bar-row">
+            <div class="chart-bar-label">{{ row.month }}</div>
+            <div class="chart-bar-track">
+              <div class="chart-bar-fill" style="width:{{ ((row.cnt / max_count) * 100)|round(1) }}%;"></div>
+            </div>
+            <div class="chart-bar-count">{{ row.cnt }}</div>
+          </div>
+          {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state">
+          <i class="bi bi-bar-chart"></i>
+          <div class="fw-semibold">No enrollment data yet</div>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <!-- Completion breakdown -->
+  <div class="col-lg-6">
+    <div class="surface mb-4">
+      <div class="surface-header"><h3><i class="bi bi-pie-chart-fill me-2 text-primary"></i>Enrollment Completion</h3></div>
+      <div class="surface-body">
+        {% set incomplete = total_farmers - complete %}
+        {% set pct = ((complete / total_farmers * 100)|round(1)) if total_farmers > 0 else 0 %}
+        <div class="d-flex align-items-center gap-4 mb-3">
+          <div style="position:relative;width:120px;height:120px;">
+            <svg viewBox="0 0 36 36" style="transform:rotate(-90deg);width:120px;height:120px;">
+              <circle cx="18" cy="18" r="15.9" fill="none" stroke="var(--gov-blue-50)" stroke-width="3.5"/>
+              <circle cx="18" cy="18" r="15.9" fill="none" stroke="var(--gov-blue-700)" stroke-width="3.5"
+                stroke-dasharray="{{ pct }} {{ 100 - pct }}" stroke-dashoffset="0" stroke-linecap="round"/>
+            </svg>
+            <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:800;font-size:1.3rem;color:var(--gov-blue-700);">{{ pct }}%</div>
+          </div>
+          <div>
+            <div class="d-flex align-items-center gap-2 mb-2">
+              <div style="width:12px;height:12px;border-radius:3px;background:var(--gov-blue-700);"></div>
+              <span style="font-size:0.85rem;">Complete: <strong>{{ complete }}</strong></span>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+              <div style="width:12px;height:12px;border-radius:3px;background:var(--gov-blue-50);border:1px solid var(--line);"></div>
+              <span style="font-size:0.85rem;">Incomplete: <strong>{{ incomplete }}</strong></span>
+            </div>
+          </div>
+        </div>
+        <p style="font-size:0.82rem;color:var(--muted);">
+          A farmer is considered "Fully Enrolled" when at least {{ 5 }} fingerprints have been registered and all records are on-chain.
+        </p>
+      </div>
+    </div>
+
+    <!-- Recent farmer list -->
+    <div class="surface">
+      <div class="surface-header"><h3><i class="bi bi-people-fill me-2 text-primary"></i>Recently Registered Farmers</h3></div>
+      {% if all_farmers %}
+      <div class="table-responsive">
+        <table class="table table-modern mb-0">
+          <thead><tr><th>Farmer ID</th><th>Name</th><th>District</th><th>Status</th><th>Date</th></tr></thead>
+          <tbody>
+            {% for f in all_farmers[:10] %}
+            <tr>
+              <td><a href="{{ url_for('government_farmer_details', farmer_id=f.farmer_id) }}" class="text-mono" style="font-size:0.78rem;">{{ f.farmer_id }}</a></td>
+              <td>{{ f.name }}</td>
+              <td style="font-size:0.83rem;">{{ f.district or '—' }}</td>
+              <td>
+                {% if f.registration_status == 'COMPLETE' %}<span class="badge-status badge-success">Complete</span>
+                {% else %}<span class="badge-status badge-warning">Incomplete</span>{% endif %}
+              </td>
+              <td style="font-size:0.78rem;color:var(--muted);">{{ f.created_at[:10] if f.created_at else '—' }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+      <div class="empty-state" style="padding:24px;"><i class="bi bi-people"></i><div>No farmers yet.</div></div>
+      {% endif %}
+    </div>
+  </div>
+
+</div>
+
+{% endblock %}

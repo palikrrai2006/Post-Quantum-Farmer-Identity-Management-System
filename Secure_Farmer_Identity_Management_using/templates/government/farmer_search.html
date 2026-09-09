@@ -1,0 +1,58 @@
+{% extends "shared/dashboard_layout.html" %}
+{% block title %}Search Farmer{% endblock %}
+{% block body_class %}portal-government{% endblock %}
+{% block breadcrumbs %}
+<div class="breadcrumb-bar"><a href="{{ url_for('government_dashboard') }}">Dashboard</a><span class="sep">/</span>Search Farmer</div>
+{% endblock %}
+{% block page_title %}Search Farmer{% endblock %}
+{% block page_subtitle %}Look up a farmer to view records or begin identity verification.{% endblock %}
+
+{% block content %}
+<div class="surface mb-4">
+  <div class="surface-body">
+    <form method="GET" action="{{ url_for('government_farmer_search') }}" class="d-flex gap-2 flex-wrap">
+      <div class="input-group" style="max-width:460px;">
+        <span class="input-group-text"><i class="bi bi-search"></i></span>
+        <input type="text" class="form-control" name="q" value="{{ query }}" placeholder="Search by name, farmer ID, phone or village">
+      </div>
+      <button type="submit" class="btn btn-accent">Search</button>
+      {% if query %}<a href="{{ url_for('government_farmer_search') }}" class="btn btn-outline-secondary">Clear</a>{% endif %}
+    </form>
+  </div>
+</div>
+
+{% if query %}
+<div class="surface">
+  <div class="surface-header"><h3><i class="bi bi-people-fill me-2 text-primary"></i>Results for "{{ query }}"</h3><span class="badge-status badge-info">{{ results|length }} Found</span></div>
+  {% if results and results|length > 0 %}
+  <div class="table-responsive">
+    <table class="table table-modern mb-0">
+      <thead><tr><th>Farmer</th><th>Farmer ID</th><th>Phone</th><th>Village / District</th><th></th></tr></thead>
+      <tbody>
+        {% for farmer in results %}
+        <tr>
+          <td class="d-flex align-items-center gap-2">
+            <div class="row-avatar">{{ (farmer.name[0] if farmer.name else 'F')|upper }}</div>
+            <span class="fw-semibold">{{ farmer.name }}</span>
+          </td>
+          <td class="text-mono">{{ farmer.farmer_id }}</td>
+          <td>{{ farmer.phone }}</td>
+          <td>{{ farmer.village }}{{ ', ' ~ farmer.district if farmer.district else '' }}</td>
+          <td class="text-end"><a href="{{ url_for('government_farmer_details', farmer_id=farmer.farmer_id) }}" class="btn btn-sm btn-accent">View &amp; Verify <i class="bi bi-arrow-right ms-1"></i></a></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div class="empty-state"><i class="bi bi-emoji-frown"></i><div class="fw-semibold mb-1">No farmers found</div><div style="font-size:0.85rem;">Try a different name, ID, phone number or village.</div></div>
+  {% endif %}
+</div>
+{% else %}
+<div class="surface"><div class="empty-state">
+  <i class="bi bi-search"></i>
+  <div class="fw-semibold mb-1">Start typing to search</div>
+  <div style="font-size:0.85rem;">Search by farmer name, ID, phone number, or village.</div>
+</div></div>
+{% endif %}
+{% endblock %}

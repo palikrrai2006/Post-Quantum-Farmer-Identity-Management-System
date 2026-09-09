@@ -1,0 +1,102 @@
+{% extends "shared/base.html" %}
+{% block title %}Farmer Login{% endblock %}
+{% block body_class %}portal-farmer{% endblock %}
+{% block body %}
+<div class="auth-page" style="--auth-c1: var(--gov-green-700); --auth-c2: var(--gov-green-600);">
+  <div class="auth-card fade-in-up" style="max-width: 500px;">
+    <div class="portal-badge">🌾</div>
+    <div class="section-eyebrow">Government Digital Identity Initiative</div>
+    <h1 class="h4 mt-1 mb-1">Farmer Portal</h1>
+    
+    {% include "shared/messages.html" %}
+
+    {% if step == 'id' or not step %}
+    <!-- STEP 1: ENTER FARMER ID -->
+    <p class="text-muted-2 mb-4" style="font-size:0.88rem;">Enter your 12-digit Government Farmer ID to continue.</p>
+    <form method="POST" action="{{ url_for('farmer_portal_login') }}" class="text-start">
+      <input type="hidden" name="auth_step" value="check_id">
+      <div class="mb-4">
+        <label class="form-label" for="farmer_id">Farmer ID</label>
+        <div class="input-group">
+          <span class="input-group-text"><i class="bi bi-person-badge"></i></span>
+          <input type="text" class="form-control form-control-lg" id="farmer_id" name="farmer_id" placeholder="e.g. FARMER0001" required autofocus style="text-transform: uppercase; font-family: monospace; letter-spacing: 1px;">
+        </div>
+      </div>
+      <button type="submit" class="btn btn-lg w-100" style="background:var(--gov-green-600);color:#fff;">
+        Continue <i class="bi bi-arrow-right ms-1"></i>
+      </button>
+    </form>
+    {% endif %}
+
+    {% if step == 'auth' %}
+    <!-- STEP 2: CHOOSE AUTH METHOD -->
+    <p class="text-muted-2 mb-4" style="font-size:0.88rem;">Authenticate for Farmer ID: <strong class="text-dark">{{ farmer_id }}</strong></p>
+    
+    <ul class="nav nav-pills nav-fill mb-4" id="authTab" role="tablist">
+      <li class="nav-item" role="presentation">
+        <button class="nav-link {{ 'active' if auth_mode != 'biometric' else '' }}" id="otp-tab" data-bs-toggle="tab" data-bs-target="#otp" type="button" role="tab" aria-selected="true"><i class="bi bi-phone me-2"></i>OTP</button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link {{ 'active' if auth_mode == 'biometric' else '' }}" id="bio-tab" data-bs-toggle="tab" data-bs-target="#bio" type="button" role="tab" aria-selected="false"><i class="bi bi-fingerprint me-2"></i>Biometric</button>
+      </li>
+    </ul>
+
+    <div class="tab-content text-start" id="authTabContent">
+      <!-- OTP Form -->
+      <div class="tab-pane fade {{ 'show active' if auth_mode != 'biometric' else '' }}" id="otp" role="tabpanel" tabindex="0">
+        <div class="alert alert-info py-2" style="font-size: 0.85rem;">
+          <i class="bi bi-info-circle-fill me-2"></i>For demo purposes, the OTP is <strong>123456</strong>.
+        </div>
+        <form method="POST" action="{{ url_for('farmer_portal_login') }}">
+          <input type="hidden" name="auth_step" value="verify_otp">
+          <input type="hidden" name="farmer_id" value="{{ farmer_id }}">
+          <div class="mb-4">
+            <label class="form-label">Enter 6-digit OTP</label>
+            <input type="text" class="form-control form-control-lg text-center" name="otp" placeholder="XXXXXX" maxlength="6" required style="letter-spacing: 5px; font-weight: 600;">
+          </div>
+          <button type="submit" class="btn btn-lg w-100" style="background:var(--gov-green-600);color:#fff;">
+            Verify & Login
+          </button>
+        </form>
+      </div>
+
+      <!-- Biometric Form -->
+      <div class="tab-pane fade {{ 'show active' if auth_mode == 'biometric' else '' }}" id="bio" role="tabpanel" tabindex="0">
+        <form method="POST" action="{{ url_for('farmer_portal_login') }}" enctype="multipart/form-data">
+          <input type="hidden" name="auth_step" value="verify_biometric">
+          <input type="hidden" name="farmer_id" value="{{ farmer_id }}">
+          
+          <div class="mb-3">
+            <label class="form-label">Select Finger Position</label>
+            <select class="form-select" name="finger_position" required>
+              <option value="LEFT_THUMB">Left Thumb</option>
+              <option value="LEFT_INDEX">Left Index</option>
+              <option value="RIGHT_THUMB">Right Thumb</option>
+              <option value="RIGHT_INDEX">Right Index</option>
+            </select>
+          </div>
+          
+          <div class="mb-4">
+            <label class="form-label">Scan / Upload Fingerprint</label>
+            <input type="file" class="form-control" name="fingerprint_image" accept="image/png, image/jpeg, image/bmp" required>
+            <div class="form-text text-muted" style="font-size:0.75rem;">Simulating external fingerprint scanner device.</div>
+          </div>
+          
+          <button type="submit" class="btn btn-lg w-100" style="background:var(--gov-green-600);color:#fff;">
+            <i class="bi bi-fingerprint me-2"></i> Verify Biometric
+          </button>
+        </form>
+      </div>
+    </div>
+    
+    <div class="mt-3 text-center">
+      <a href="{{ url_for('farmer_portal_login') }}" class="text-muted" style="font-size:0.83rem;">Cancel and use a different Farmer ID</a>
+    </div>
+    {% endif %}
+
+    <div class="auth-footer-links mt-4">
+      <a href="{{ url_for('index') }}" class="back-home"><i class="bi bi-arrow-left me-1"></i>Back to Home</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,426 @@
+{% extends "shared/base.html" %}
+
+{% block title %}Registration Center Dashboard{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <!-- Page Header -->
+    <div class="row mb-4">
+
+        <div class="col-md-12">
+
+            <div class="card shadow border-0 bg-primary text-white">
+
+                <div class="card-body">
+
+                    <h2>
+                        <i class="bi bi-building"></i>
+                        Certified Registration Center
+                    </h2>
+
+                    <p class="mb-0">
+                        Government Secure Farmer Identity Management System
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Statistics -->
+
+    <div class="row g-4">
+
+        <div class="col-lg-3">
+
+            <div class="card shadow border-0">
+
+                <div class="card-body text-center">
+
+                    <i class="bi bi-person-plus-fill display-4 text-primary"></i>
+
+                    <h5 class="mt-3">Today's Registrations</h5>
+
+                    <!-- TODO : Replace with backend variable -->
+
+                    <h2 class="fw-bold text-primary">0</h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-lg-3">
+
+            <div class="card shadow border-0">
+
+                <div class="card-body text-center">
+
+                    <i class="bi bi-check-circle-fill display-4 text-success"></i>
+
+                    <h5 class="mt-3">Completed</h5>
+
+                    <!-- TODO -->
+
+                    <h2 class="fw-bold text-success">0</h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-lg-3">
+
+            <div class="card shadow border-0">
+
+                <div class="card-body text-center">
+
+                    <i class="bi bi-fingerprint display-4 text-warning"></i>
+
+                    <h5 class="mt-3">Pending Fingerprints</h5>
+
+                    <!-- TODO -->
+
+                    <h2 class="fw-bold text-warning">0</h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-lg-3">
+
+            <div class="card shadow border-0">
+
+                <div class="card-body text-center">
+
+                    <i class="bi bi-people-fill display-4 text-danger"></i>
+
+                    <h5 class="mt-3">Operators</h5>
+
+                    <!-- TODO -->
+
+                    <h2 class="fw-bold text-danger">1</h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <br>
+
+    <!-- Quick Actions -->
+
+    <div class="row">
+
+        <div class="col-lg-6">
+
+            <div class="card shadow border-0">
+
+                <div class="card-header bg-success text-white">
+
+                    <h5>
+
+                        <i class="bi bi-lightning-charge-fill"></i>
+
+                        Quick Actions
+
+                    </h5>
+
+                </div>
+
+                <div class="card-body">
+
+                    <div class="d-grid gap-3">
+
+                        <a href="{{ url_for('center_register') }}"
+                           class="btn btn-primary btn-lg">
+
+                            <i class="bi bi-person-plus"></i>
+
+                            Register Farmer
+
+                        </a>
+
+                        <button
+                                class="btn btn-warning btn-lg"
+                                disabled>
+
+                            <i class="bi bi-fingerprint"></i>
+
+                            Enroll Fingerprints
+
+                        </button>
+
+                        <button
+                                class="btn btn-secondary btn-lg"
+                                disabled>
+
+                            <i class="bi bi-clock-history"></i>
+
+                            Registration History
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Operator -->
+
+        <div class="col-lg-6">
+
+            <div class="card shadow border-0">
+
+                <div class="card-header bg-dark text-white">
+
+                    <h5>
+
+                        <i class="bi bi-person-badge"></i>
+
+                        Operator Information
+
+                    </h5>
+
+                </div>
+
+                <div class="card-body">
+
+                    <table class="table">
+
+                        <tr>
+
+                            <th>Username</th>
+
+                            <td>{{ session.username }}</td>
+
+                        </tr>
+
+                        <tr>
+
+                            <th>Role</th>
+
+                            <td>{{ session.role }}</td>
+
+                        </tr>
+
+                        <tr>
+
+                            <th>Status</th>
+
+                            <td>
+
+                                <span class="badge bg-success">
+
+                                    Active
+
+                                </span>
+
+                            </td>
+
+                        </tr>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <br>
+
+    <!-- Registration Workflow -->
+
+    <div class="card shadow border-0">
+
+        <div class="card-header bg-primary text-white">
+
+            <h4>
+
+                <i class="bi bi-diagram-3-fill"></i>
+
+                Secure Registration Workflow
+
+            </h4>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="timeline">
+
+                <div class="mb-4">
+
+                    <span class="badge bg-primary">STEP 1</span>
+
+                    Register Farmer
+
+                </div>
+
+                <div class="mb-4">
+
+                    ↓
+
+                </div>
+
+                <div class="mb-4">
+
+                    <span class="badge bg-info">
+
+                        STEP 2
+
+                    </span>
+
+                    Capture Fingerprints
+
+                </div>
+
+                <div class="mb-4">
+
+                    ↓
+
+                </div>
+
+                <div class="mb-4">
+
+                    <span class="badge bg-secondary">
+
+                        STEP 3
+
+                    </span>
+
+                    Generate SourceAFIS Template
+
+                </div>
+
+                <div class="mb-4">
+
+                    ↓
+
+                </div>
+
+                <div class="mb-4">
+
+                    <span class="badge bg-warning text-dark">
+
+                        STEP 4
+
+                    </span>
+
+                    AES-256-GCM Encryption
+
+                </div>
+
+                <div class="mb-4">
+
+                    ↓
+
+                </div>
+
+                <div class="mb-4">
+
+                    <span class="badge bg-danger">
+
+                        STEP 5
+
+                    </span>
+
+                    ML-KEM-1024 Encapsulation
+
+                </div>
+
+                <div class="mb-4">
+
+                    ↓
+
+                </div>
+
+                <div class="mb-4">
+
+                    <span class="badge bg-dark">
+
+                        STEP 6
+
+                    </span>
+
+                    ML-DSA-87 Digital Signature
+
+                </div>
+
+                <div class="mb-4">
+
+                    ↓
+
+                </div>
+
+                <div class="mb-4">
+
+                    <span class="badge bg-success">
+
+                        STEP 7
+
+                    </span>
+
+                    Upload Secure Package to IPFS
+
+                </div>
+
+                <div class="mb-4">
+
+                    ↓
+
+                </div>
+
+                <div class="mb-4">
+
+                    <span class="badge bg-primary">
+
+                        STEP 8
+
+                    </span>
+
+                    Store CID + SHA3 Hash on Blockchain
+
+                </div>
+
+                <div class="mt-5 text-center">
+
+                    <div class="alert alert-success">
+
+                        <h4>
+
+                            ✔ Registration Completed Successfully
+
+                        </h4>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
